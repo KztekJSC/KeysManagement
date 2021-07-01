@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Views\ActiveKey\" />
     <Folder Include="uploads\" />
     <Folder Include="Components\HeaderAdmin\" />
     <Folder Include="Views\Shared\Components\HeaderAdmin\" />

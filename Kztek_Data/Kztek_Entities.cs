@@ -39,7 +39,8 @@ namespace Kztek_Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<App> Apps { get; set; }
         public DbSet<Project> Projects { get; set; }
-
+        public DbSet<CDKey> CDKeys { get; set; }
+        public DbSet<ActiveKey> ActiveKeys { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
