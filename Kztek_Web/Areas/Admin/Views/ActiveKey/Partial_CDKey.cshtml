@@ -1,0 +1,51 @@
+﻿@using Kztek_Model.Models 
+@model List<Kztek_Model.Models.CDKey>
+@{ 
+    var codes = (string)ViewBag.Codes;
+}
+@if (Model != null)
+{
+    int count = 0;
+    <div class="col-xs-12">
+        <table class="table table-bordered table-hover" id="lpCDKey" role="grid">
+            <colgroup>
+                <col style="width:8%">
+                <col style="width:17%">
+                <col>
+                <col style="width:17%">
+                <col style="width:5% ">
+            </colgroup>
+
+            <tbody role="rowgroup">
+
+                @foreach (var item in Model)
+                {
+                    count++;
+                   
+                <tr class="trItem" idata="@item.Code">
+                    <td class="left">@count</td>
+                    <td>
+                        @item.AppId
+                    </td>
+                    <td>
+                        @item.Code
+                    </td>
+                    <td class="center">
+                        @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
+                    </td>
+
+                    <td class="center" name="chkrow">
+                        <label>
+                            <input type="checkbox" class="ace chkItem" value="@item.Code" @string.Format("{0}", !string.IsNullOrEmpty(codes) && codes.Split(',').FirstOrDefault(n => n == item.Code) != null ? "checked" : "")><span class="lbl"></span>
+                        </label>
+                    </td>
+                </tr>
+
+
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

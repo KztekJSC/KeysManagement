@@ -22,5 +22,6 @@ namespace Kztek_Service.Admin
 
         Task<ActiveKey> GetByKeyActive(string KeyActive);
         Task<IEnumerable<ActiveKey>> GetAll();
+        Task<List<ActiveKey>> GetByApp(string cdkeys);
     }
 }

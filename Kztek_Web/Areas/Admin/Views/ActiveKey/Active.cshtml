@@ -1,0 +1,195 @@
+﻿@model Kztek_Model.Models.ActiveKey
+@using Kztek_Library.Helpers
+
+@{
+    //var countcard = Model.Model != null && !string.IsNullOrEmpty(Model.Model.Note) ? Model.Model.Note.Split(",").Length : 0;
+    //var feecard = Model.Model.TypeFee == "2" ? Model.Model.Price : countcard != 0 ? Model.Model.Price / countcard : 0;
+}
+@Html.Hidden("strCode", "")
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-3">
+
+        <h3 class="header smaller lighter blue">
+            Tìm kiếm
+        </h3>
+
+        <div class="col-xs-12">
+            <div class="form-horizontal">
+                @*<div class="form-group" style="margin-bottom:unset;">
+                        <label>Phần mềm:</label>
+                    </div>*@
+                <div class="form-group">
+                    @await Component.InvokeAsync("MultiSelect", ViewBag.App)
+                    @Html.Hidden("strapp")
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 col-sm-3">
+        <h3 class="header smaller lighter blue">
+            UserCode
+        </h3>
+
+        <div class="col-xs-12">
+            <div class="form-horizontal">
+
+                <div class="form-group">
+                    <input class="form-control" type="text" id="txtUserCode" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 col-sm-3">
+        <h3 class="header smaller lighter blue">
+            Chọn dự án
+        </h3>
+
+        <div class="col-xs-12">
+            <div class="form-horizontal">
+                @*<div class="form-group" style="margin-bottom:unset;">
+                    <label>Phần mềm:</label>
+                </div>*@
+                <div class="form-group">
+                    @await Component.InvokeAsync("ChosenSelect", ViewBag.Project)
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 col-sm-3">
+        <h3 class="header smaller lighter blue">
+            Chọn khách hàng
+        </h3>
+
+        <div class="col-xs-12">
+            <div class="form-horizontal">
+                @*<div class="form-group" style="margin-bottom:unset;">
+                    <label>Phần mềm:</label>
+                </div>*@
+                <div class="form-group">
+                    @await Component.InvokeAsync("ChosenSelect", ViewBag.Customer)
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="center">
+        <div class=" divboxmd">
+            <button type="button" class="btn btn-app btn-primary btnActive" style="width: 200px;">
+                <i class="fa fa-key bigger-160" aria-hidden="true"></i><span class="line-height-1 bigger-170"> Active Key </span>
+            </button>
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <h3 class="header smaller lighter blue">
+            Danh sách CD Key (<span id="TotalCount"></span>)
+        </h3>
+
+
+        <div class="row divPadding" style="height:500px;overflow: auto;">
+            <div class="tblHeader clearfix">
+                <div class="col-xs-12">
+                    <table class="table table-striped table-bordered" id="tblCDKey" style="margin-bottom:0px;">
+                        <colgroup>
+                            <col style="width:8%">
+                            <col style="width:17%">
+                            <col>
+                            <col style="width:17%">
+                            <col style="width:5% ">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Phần mềm</th>
+                                <th class="text-center">Code</th>
+                                <th class="text-center">Ngày tạo</th>
+                                <th class="text-center" width="60">
+                                    <label>
+                                        <input type="checkbox" id="chkAllHeader" class="ace">
+                                        <span class="lbl">
+                                        </span>
+                                    </label>
+                                </th>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+
+            </div>
+            <div class="tblTablList clearfix" id="divCDKey">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xs-6">
+        <h3 class="header smaller lighter blue">
+            Danh sách Active Key
+        </h3>
+
+        <div class="row divPadding" style="height:500px;overflow: auto;">
+            <div class="tblHeader clearfix">
+                <div class="col-xs-12">
+                    <table class="table table-striped table-bordered" id="tblActiveKey" style="margin-bottom:0px;">
+                        <colgroup>
+                            <col style="width:5%">
+                            <col style="width:20%">
+                            <col>
+                            <col style="width:15%">
+                            <col style="width:15%">
+                            <col style="width:15%">
+
+                            <col style="width:10%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">CDKey</th>
+                                <th class="text-center">ActiveKey</th>
+                                <th class="text-center">Phần mềm</th>
+                                <th class="text-center">Dự án</th>
+                                <th class="text-center">Khách hàng</th>
+
+                                <th class="text-center">Trạng thái</th>
+
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+
+            </div>
+            <div class="tblTablList clearfix" id="divActiveKey">
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script src="~/modules/Parking/ActiveKeyController.js"></script>
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+}

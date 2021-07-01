@@ -22,5 +22,7 @@ namespace Kztek_Service.Admin
 
         Task<CDKey> GetByCode(string Code);
         Task<IEnumerable<CDKey>> GetAll();
+        Task<List<CDKey>> GetByApp(string App);
+        Task<List<CDKey>> GetByKeys(string Keys);
     }
 }

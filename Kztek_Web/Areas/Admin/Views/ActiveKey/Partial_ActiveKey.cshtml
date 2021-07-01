@@ -1,0 +1,81 @@
+﻿@using Kztek_Model.Models 
+@model List<Kztek_Model.Models.ActiveKey>
+@{ 
+    var codes = (string)ViewBag.Codes;
+    var arr = codes.Split(',').Where(n => !string.IsNullOrEmpty(n));
+}
+@if (Model != null)
+{
+    int count = 0;
+    <div class="col-xs-12">
+        <table class="table table-bordered table-hover" id="lpActiveKey" role="grid">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:20%">
+                <col>
+                <col style="width:15%">
+                <col style="width:15%">
+                <col style="width:15%">
+             
+                <col style="width:10%">
+            </colgroup>
+
+            <tbody role="rowgroup">
+
+                @foreach (var item in arr)
+                {
+                    count++;
+                    var obj = Model.FirstOrDefault(n => n.CDKey == item);
+                   
+                <tr class="trItem">
+                    <td class="left">@count</td>
+                    <td>
+                        @item
+                    </td>
+                    <td>
+                        @if (obj != null)
+                        {
+                            @obj.KeyActive
+                        }
+
+                    </td>
+                    <td>
+                        @if (obj != null)
+                        {
+                            @obj.AppId
+                        }
+
+                    </td>
+                    <td>
+                        @if (obj != null)
+                        {
+                            @obj.ProjectId
+                        }
+
+                    </td>
+                    <td>
+                        @if (obj != null)
+                        {
+                            @obj.CustomerId
+                        }
+
+                    </td>
+                    <td>
+                        @if (obj != null)
+                        {
+                        <span class="label label-sm label-success">Active thành công</span>
+                        }                       
+                        else
+                        {
+                            <span class="label label-sm label-danger">Lỗi</span>
+                        }
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

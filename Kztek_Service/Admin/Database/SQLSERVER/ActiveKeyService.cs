@@ -91,6 +91,20 @@ namespace Kztek_Service.Admin.Database.SQLSERVER
 
             return await Task.FromResult(query.FirstOrDefault());
         }
+        public async Task<List<ActiveKey>> GetByApp(string cdkeys)
+        {
+            var query = from n in _ActiveKeyRepository.Table
+                        where !n.IsDeleted
+                        select n;
 
+            if (!string.IsNullOrEmpty(cdkeys))
+            {
+                var arr = cdkeys.Split(',').Where(n => !string.IsNullOrEmpty(n));
+
+                query = query.Where(n => arr.Contains(n.CDKey));
+            }
+
+            return await Task.FromResult(query.ToList());
+        }
     }
 }
