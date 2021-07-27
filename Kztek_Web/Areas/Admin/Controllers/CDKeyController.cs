@@ -310,7 +310,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
         }
         #endregion
 
-        public ActionResult Download(string id)
+        public async Task<IActionResult> Download(string id)
         {
            
 
