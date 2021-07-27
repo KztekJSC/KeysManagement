@@ -91,7 +91,9 @@ namespace Kztek_Web.Areas.Admin.Controllers
         {
 
             model = model == null ? new CDKey() : model;
-            model.Active = false;
+            model.ExpireDate = DateTime.Now;
+            model.IsExpire = false;
+            model.Active = true;
             ViewBag.keyValue = key;
             ViewBag.AreaCodeValue = AreaCode;
             ViewBag.App = await GetApp(model.AppId);
@@ -101,7 +103,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
         [CheckSessionCookie(AreaConfig.Admin)]
         [HttpPost]
-        public async Task<IActionResult> Create(CDKey model, string key = "", bool SaveAndCountinue = false, string AreaCode = "")
+        public async Task<IActionResult> Create(CDKey model, string key = "", bool SaveAndCountinue = false, string AreaCode = "", string txtDate = "")
         {
             model.Active = false;
             ViewBag.keyValue = key;
@@ -119,6 +121,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
             model.DateCreated = DateTime.Now;
             model.IsDeleted = false;
             model.UserCreated = user != null ? user.UserId : "";
+            model.ExpireDate = !string.IsNullOrEmpty(txtDate) ? Convert.ToDateTime(txtDate) : DateTime.Now;
             //Thực hiện thêm mới
             var result = await _CDKeyService.Create(model);
             if (result.isSuccess)
@@ -177,7 +180,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
         /// <returns></returns>
         [CheckSessionCookie(AreaConfig.Admin)]
         [HttpPost]
-        public async Task<IActionResult> Update(CDKey model, string AreaCode = "", int page = 1, string key = "",string appId = "")
+        public async Task<IActionResult> Update(CDKey model, string AreaCode = "", int page = 1, string key = "",string appId = "", string txtDate = "")
         {
             ViewBag.App = await GetApp(appId);
             //
@@ -194,20 +197,6 @@ namespace Kztek_Web.Areas.Admin.Controllers
                 return View(model);
             }
 
-            //
-            //if (string.IsNullOrWhiteSpace(model.Name))
-            //{
-            //    ModelState.AddModelError("Name", "Vui lòng nhập thông tin");
-            //    return View(oldObj);
-            //}
-
-            //var existed = await _CDKeyService.GetByName(model.Name);
-            //if (existed != null && existed.Id != oldObj.Id)
-            //{
-            //    ModelState.AddModelError("Name", "Thông tin đã được sử dụng");
-            //    return View(model);
-            //}
-
 
             //
             if (!ModelState.IsValid)
@@ -220,7 +209,10 @@ namespace Kztek_Web.Areas.Admin.Controllers
             {
                 oldObj.AppId = appId;
             }
-         
+
+            oldObj.ExpireDate = !string.IsNullOrEmpty(txtDate) ? Convert.ToDateTime(txtDate) : DateTime.Now;
+            oldObj.Active = model.Active;
+            oldObj.IsExpire = model.IsExpire;
 
             var result = await _CDKeyService.Update(oldObj);
             if (result.isSuccess)
@@ -276,12 +268,14 @@ namespace Kztek_Web.Areas.Admin.Controllers
                 var model = new CDKey
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Active = false,
+                    Active = true,
                     AppId = App,
                     DateCreated = DateTime.Now,
                     IsDeleted = false,
                     UserCreated = user != null ? user.UserId : "",
-                    Code = Guid.NewGuid().ToString()
+                    Code = Guid.NewGuid().ToString(),
+                    ExpireDate = DateTime.Now,
+                    IsExpire = false
                 };
 
                 mes = await CreateKey(model);
@@ -315,5 +309,12 @@ namespace Kztek_Web.Areas.Admin.Controllers
             return mes;
         }
         #endregion
+
+        public ActionResult Download(string id)
+        {
+           
+
+            return View();
+        }
     }
 }

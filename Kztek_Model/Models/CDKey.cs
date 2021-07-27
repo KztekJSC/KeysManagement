@@ -19,5 +19,7 @@ namespace Kztek_Model.Models
         public bool Active { get; set; }
         public DateTime DateCreated { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime ExpireDate { get; set; }
+        public bool IsExpire { get; set; }
     }
 }

@@ -57,6 +57,8 @@
                     <th class="text-center">Tên phần mềm</th>
                     <th class="text-center">Key</th>
                     <th class="text-center hidden-480">Trạng thái</th>
+                    <th class="text-center" width="150">Check hạn</th>
+                    <th class="text-center" width="150">Hạn</th>
                     <th class="text-center" width="150">Ngày tạo</th>
                     <th class="text-center" width="150">Người tạo</th>
                     <th class="text-center" width="80"></th>
@@ -87,7 +89,23 @@
                                     <span class="label label-sm label-info">Chưa kích hoạt</span>
                                 }
                             </td>
+                             <td class="text-center hidden-480">
+                                @if (item.IsExpire)
+                                {
+                                    <span class="label label-sm label-success">Có</span>
+                                }
+                                else
+                                {
+                                    <span class="label label-sm label-info">Không</span>
+                                }
+                            </td>
+                             <td class="center">
+                                 @if (item.IsExpire)
+                                 {
+                                     @item.ExpireDate.ToString("dd/MM/yyyy")
+                                 }
 
+                             </td>
                             <td class="center">
                                 @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
                             </td>
@@ -96,6 +114,14 @@
                             </td>
                             <td class="center">
                                 <div class="btn-CDKey">
+                                    @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
+                                   {
+           ControllerName = controller,
+           ActionName = "ExportKey",
+           RecordId = "",
+           model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
+           Auth_Value = authModel
+       })
                                     @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
                                     {
             ControllerName = controller,

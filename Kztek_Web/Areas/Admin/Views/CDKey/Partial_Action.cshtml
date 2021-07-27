@@ -58,6 +58,38 @@
 
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label no-padding-right">Hạn</label>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control drp_auto_input" name="txtDate" value="@Model.Model.ExpireDate" />
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label no-padding-right">Check hạn</label>
+                <div class="col-sm-4 col-xs-12">
+                  
+                    <label class="line-height-250">
+                        @Html.CheckBoxFor(n => Model.Model.IsExpire, new { @class = "ace input-lg" })
+                        <span class="lbl"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label no-padding-right">Kích hoạt</label>
+                <div class="col-sm-4 col-xs-12">
+                    <label class="line-height-250">
+                        @Html.CheckBoxFor(n => Model.Model.Active, new { @class = "ace input-lg" })
+                        <span class="lbl"></span>
+                    </label>
+
+                </div>
+            </div>
 
             @await Html.PartialAsync("~/Views/Shared/Partials/ButtonPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
             {

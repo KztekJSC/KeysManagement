@@ -12,5 +12,6 @@
         public int LockCard_Auth { get; set; } = 0;
         public int OpenCard_Auth { get; set; } = 0;
         public int DeleteCard_Auth { get; set; } = 0;
+        public int ExportKey_Auth { get; set; } = 0;
     }
 }

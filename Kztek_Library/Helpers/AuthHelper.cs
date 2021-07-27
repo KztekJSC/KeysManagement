@@ -33,6 +33,7 @@ namespace Kztek_Library.Helpers
                     Auth.LockCard_Auth = 1;
                     Auth.OpenCard_Auth = 1;
                     Auth.DeleteCard_Auth = 1;
+                    Auth.ExportKey_Auth = 1;
                 }
                 else
                 {
@@ -83,6 +84,13 @@ namespace Kztek_Library.Helpers
                     if (objDeleteCard != null)
                     {
                         Auth.DeleteCard_Auth = 1;
+                    }
+
+                    //Xuất key
+                    var objExportKey = menus.FirstOrDefault(n => n.ControllerName == controller && n.ActionName == "ExportKey");
+                    if (objExportKey != null)
+                    {
+                        Auth.ExportKey_Auth = 1;
                     }
                 }
 
