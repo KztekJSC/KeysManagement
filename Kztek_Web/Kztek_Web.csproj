@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Kztek_Core\Kztek_Core.csproj" />
     <ProjectReference Include="..\Kztek_Model\Kztek_Model.csproj" />
     <ProjectReference Include="..\Kztek_Data\Kztek_Data.csproj" />
+    <ProjectReference Include="..\Kztek_Security\Kztek_Security.csproj" />
     <ProjectReference Include="..\Kztek_Service\Kztek_Service.csproj" />
     <ProjectReference Include="..\Kztek_Library\Kztek_Library.csproj" />
   </ItemGroup>
