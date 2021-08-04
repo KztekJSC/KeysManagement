@@ -189,7 +189,9 @@
     <script src="~/modules/Parking/ActiveKeyController.js"></script>
     <script>
         $(document).ready(function () {
+            $("#txtUserCode").select().focus();
 
+            ActiveKeyController.LoadCDKey();
         });
     </script>
 }

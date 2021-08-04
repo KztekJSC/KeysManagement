@@ -1,0 +1,50 @@
+﻿
+
+
+
+<div id="ModalUserCode" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Nhập UserCode
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="@string.Format("frmUserCode")" class="form-horizontal">
+                    @Html.Hidden("Id",(string)ViewBag.Id)
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-form-label text-sm-right pr-0">
+                                    <label for="id-form-field-name" class="mb-0">
+                                        UserCode<span style="color:red">*</span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="txtCode" rows="15"></textarea>
+                                  
+                                </div>
+                            </div>
+                           
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-mini" id="btnClose" data-dismiss="modal">Thoát</button>
+                <button type="button" class="btn btn-purple btn-mini" id="btnDownLoad">DownLoad Key</button>
+                <button type="button" class="btn btn-info btn-mini" id="btnCompleted">Hoàn thành</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+

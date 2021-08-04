@@ -92,8 +92,8 @@
 
 @if (Model.Auth_Value.ExportKey_Auth == 1 && Model.ActionName == "ExportKey")
 {
-    <a href='"@Url.Action("Download","CDKey", new {id = Model.RecordId})' class="purple" title="Xuất key">
-        <i class="ace-icon fa fa-key bigger-120"></i>
+    <a href='@Url.Action("Download","ActiveKey", new {id = Model.RecordId})' class="purple" title="Xuất key">
+        <i class="ace-icon fa fa-key bigger-120"></i> Download key
     </a>
 }
 

@@ -263,5 +263,76 @@ namespace Kztek_Web.Areas.Admin.Controllers
             return await Task.FromResult(Json(mes));
         }
         #endregion
+
+        #region Nhập UserCode
+        public async Task<IActionResult> Modal_UserCode(string id)
+        {
+
+            ViewBag.Id = id;
+            return PartialView();
+        }
+
+        public async Task<IActionResult> SaveUserCode(ActiveKey model)
+        {
+            var mes = await SaveCode(model);
+
+            return await Task.FromResult(Json(mes));
+        }
+
+        async Task<MessageReport> SaveCode(ActiveKey model)
+        {
+            var mes = new MessageReport(false, "Có lỗi xảy ra!");
+
+            if (string.IsNullOrEmpty(model.UserCode))
+            {
+                mes = new MessageReport(false, "Vui lòng chọn nhập UserCode!");
+                return mes;
+            }
+
+            try
+            {
+                //lấy danh sách cd key
+                var obj = await _ActiveKeyService.GetById(model.Id);
+
+                if (obj != null)
+                {
+                    obj.UserCode = model.UserCode;
+
+                    mes = await _ActiveKeyService.Update(obj);
+                }
+                else
+                {
+                    mes = new MessageReport(false, "Bản ghi ActiveKey không tồn tại!");
+                }
+            }
+            catch (Exception ex)
+            {
+                mes = new MessageReport(false, ex.Message);
+                return mes;
+            }
+
+            return mes;
+        }
+
+        public async Task<IActionResult> SaveUserCodeAndDownload(ActiveKey model)
+        {
+            var mes = await SaveCode(model);
+
+            //nếu lưu usercode  thành công thì download
+            if (mes.isSuccess)
+            {
+                //viết hàm download ở đây
+            }
+
+            return View();
+        }
+        public async Task<IActionResult> Download(string id)
+        {
+
+
+            return View();
+        }
+        #endregion
+
     }
 }

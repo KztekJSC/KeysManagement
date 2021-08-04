@@ -1,8 +1,18 @@
 ﻿$(function () {
 
-    $("#txtUserCode").select().focus();
+    $("body").on("click", ".modalUserCode", function () {
+        var id = $(this).attr("idata");
 
-    ActiveKeyController.LoadCDKey();
+        ActiveKeyController.LoadModel(id);
+    });
+
+    $("body").on("click", "#ModalUserCode #btnCompleted", function () {
+        ActiveKeyController.SaveUserCode();
+    });
+
+    $("body").on("click", "#ModalUserCode #btnDownLoad", function () {
+        ActiveKeyController.SaveAndDownload();
+    });
 
     $("body").on("change", "#ddlApp", function () {
         var str = '';
@@ -68,6 +78,16 @@
 })
 
 var ActiveKeyController = {
+    LoadModel: function (id) {
+        var model = {
+            idboxrender: "boxModal",
+            url: '/Admin/ActiveKey/Modal_UserCode',
+            idmodal: "ModalUserCode",
+            id:id
+        }
+
+        JSHelper.Modal_Open(model);          
+    },  
     LoadCDKey: function () {
         var model = {
             app: $("#strapp").val(),         
@@ -119,6 +139,40 @@ var ActiveKeyController = {
                     $("#strCode").val("");
 
                     ActiveKeyController.LoadCDKey();
+                } else {
+                    toastr.error(data.message);
+                }
+            });
+    },
+    SaveUserCode: function () {
+        var model = {
+            UserCode: $("#txtCode").val(),
+            Id: $("#Id").val()
+        }
+
+        JSHelper.AJAX_LoadDataPOST('/Admin/ActiveKey/SaveUserCode', model)
+            .success(function (data) {
+                if (data.isSuccess) {
+                    toastr.success(data.message);
+
+                    location.reload();
+                } else {
+                    toastr.error(data.message);
+                }
+            });
+    },
+     SaveAndDownload: function () {
+        var model = {
+            UserCode: $("#txtCode").val(),
+            Id: $("#Id").val()
+        }
+
+         JSHelper.AJAX_LoadDataPOST('/Admin/ActiveKey/SaveUserCodeAndDownload', model)
+            .success(function (data) {
+                if (data.isSuccess) {
+                    toastr.success(data.message);
+
+                    $("#ModalUserCode").modal("hide");
                 } else {
                     toastr.error(data.message);
                 }

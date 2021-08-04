@@ -114,14 +114,7 @@
                             </td>
                             <td class="center">
                                 <div class="btn-CDKey">
-                                    @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
-                                   {
-           ControllerName = controller,
-           ActionName = "ExportKey",
-           RecordId = "",
-           model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
-           Auth_Value = authModel
-       })
+                                   
                                     @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
                                     {
             ControllerName = controller,

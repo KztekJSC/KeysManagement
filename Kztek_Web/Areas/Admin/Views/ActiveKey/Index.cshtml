@@ -63,40 +63,60 @@
                 {
                     foreach (var item in Model.Data)
                     {
-                <tr class="@string.Format("{0}", (!string.IsNullOrWhiteSpace(selected) && !string.IsNullOrEmpty(item.Id) && selected == item.Id.ToString() ) ? "info" : "")">
-                    <td class="text-left">
-                        @item.AppId
-                    </td>
+                        <tr class="@string.Format("{0}", (!string.IsNullOrWhiteSpace(selected) && !string.IsNullOrEmpty(item.Id) && selected == item.Id.ToString() ) ? "info" : "")">
+                            <td class="text-left">
+                                @item.AppId
+                            </td>
 
-                    <td class="text-left hidden-480">
-                        @item.CDKey
-                    </td>
-                    <td class="text-left hidden-480">
-                        @item.UserCode
-                    </td>
-                    <td class="text-left hidden-480">
-                        @item.KeyActive
-                    </td>
-                    <td class="text-left hidden-480">
-                        @item.CustomerId
-                    </td>
-                    <td class="text-left hidden-480">
-                        @item.ProjectId
-                    </td>
-                    <td class="center">
-                        @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
-                    </td>
-                    <td class="text-left">
-                        @item.UserCreated
-                    </td>
-                    <td class="center">
-                        @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
-                    </td>
-                    <td class="text-left">
-                        @item.UserCreated
-                    </td>
+                            <td class="text-left hidden-480">
+                                @item.CDKey
+                            </td>
+                            <td class="text-left hidden-480">
+                                @item.UserCode
+                            </td>
+                            <td class="text-left hidden-480">
+                                @item.KeyActive
+                            </td>
+                            <td class="text-left hidden-480">
+                                @item.CustomerId
+                            </td>
+                            <td class="text-left hidden-480">
+                                @item.ProjectId
+                            </td>
+                            <td class="center">
+                                @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
+                            </td>
+                            <td class="text-left">
+                                @item.UserCreated
+                            </td>
+                            <td class="center">
+                                @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
+                            </td>
+                            <td class="text-left">
+                                @item.UserCreated
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.UserCode))
+                                {
+                                    @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
+                                          {
+                  ControllerName = controller,
+                  ActionName = "ExportKey",
+                  RecordId = "",
+                  model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
+                  Auth_Value = authModel
+              })
+                                }
+                                else
+                                {
+                                    <a href='javascript:void(0)' class="pink modalUserCode" idata="@item.Id" title="Nhập UserCode">
+                                        <i class="ace-icon fa fa-code bigger-120"></i> Nhập UserCode
+                                    </a>
+                                }
 
-                </tr>
+
+                            </td>
+                        </tr>
                     }
                 }
             </tbody>
@@ -121,7 +141,8 @@
 
 </div><!-- /.row -->
 @section scripts{
-   
+
+    <script src="~/modules/Parking/ActiveKeyController.js"></script>
     <script>
         $(document).ready(function () {
 
