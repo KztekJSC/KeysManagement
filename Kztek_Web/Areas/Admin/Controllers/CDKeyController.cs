@@ -19,11 +19,13 @@ namespace Kztek_Web.Areas.Admin.Controllers
         private ICDKeyService _CDKeyService;
         private IAppService _AppService;
         private IUserService _UserService;
-        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService)
+        private IActiveKeyService _ActiveKeyService;
+        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService, IActiveKeyService _ActiveKeyService)
         {
             this._CDKeyService = _CDKeyService;
             this._AppService = _AppService;
             this._UserService = _UserService;
+            this._ActiveKeyService = _ActiveKeyService;
         }
 
         [CheckSessionCookie(AreaConfig.Admin)]
@@ -274,11 +276,30 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     IsDeleted = false,
                     UserCreated = user != null ? user.UserId : "",
                     Code = Guid.NewGuid().ToString(),
-                    ExpireDate = DateTime.Now,
+                    ExpireDate = DateTime.Now.AddDays(7),
                     IsExpire = false
                 };
 
                 mes = await CreateKey(model);
+
+                if(mes.isSuccess)
+                {
+                    var activeModel = new ActiveKey()
+                    {
+                        AppId = App,
+                        CDKey = model.Code,
+                        CustomerId = "",
+                        DateCreated = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        IsDeleted = false,
+                        KeyActive = "",
+                        ProjectId = "",
+                        UserCode = "",
+                        UserCreated = user != null ? user.UserId : ""
+                    };
+
+                    await CreateActiveKey(activeModel);
+                }
             }
 
             return Json(mes);
@@ -295,7 +316,6 @@ namespace Kztek_Web.Areas.Admin.Controllers
             if (obj == null)
             {
                 mes = await _CDKeyService.Create(model);
-
                 return mes;
             }
             else
@@ -310,6 +330,14 @@ namespace Kztek_Web.Areas.Admin.Controllers
         }
         #endregion
 
+        public async Task<MessageReport> CreateActiveKey(ActiveKey model)
+        {
+            var mes = new MessageReport(false, "");
+
+            mes = await _ActiveKeyService.Create(model);
+
+            return mes;
+        }
       
     }
 }

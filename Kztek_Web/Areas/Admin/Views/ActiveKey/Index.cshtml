@@ -71,11 +71,34 @@
                             <td class="text-left hidden-480">
                                 @item.CDKey
                             </td>
-                            <td class="text-left hidden-480">
-                                @item.UserCode
+                            <td class="text-center hidden-480">
+                                @{
+                                    if (!string.IsNullOrEmpty(item.UserCode))
+                                    {
+                                        <span>✓</span>
+                                    }
+                                    else
+                                    {
+                                        <a href='javascript:void(0)' class="pink modalUserCode" idata="@item.Id" title="Nhập UserCode">
+                                            <i class="ace-icon fa fa-code bigger-120"></i> Nhập UserCode
+                                        </a>
+                                    }
+                                }
                             </td>
-                            <td class="text-left hidden-480">
-                                @item.KeyActive
+                            <td class="text-center hidden-480">
+                                @{
+                                    if (!string.IsNullOrEmpty(item.KeyActive))
+                                    {
+                                        @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
+                                           {
+                                                ControllerName = controller,
+                                                ActionName = "ExportKey",
+                                                RecordId = item.Id,
+                                                model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
+                                                Auth_Value = authModel
+                                                })
+                                            }
+                                }
                             </td>
                             <td class="text-left hidden-480">
                                 @item.CustomerId
@@ -94,27 +117,6 @@
                             </td>
                             <td class="text-left">
                                 @item.UserCreated
-                            </td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.UserCode))
-                                {
-                                    @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
-                                          {
-                  ControllerName = controller,
-                  ActionName = "ExportKey",
-                  RecordId = "",
-                  model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
-                  Auth_Value = authModel
-              })
-                                }
-                                else
-                                {
-                                    <a href='javascript:void(0)' class="pink modalUserCode" idata="@item.Id" title="Nhập UserCode">
-                                        <i class="ace-icon fa fa-code bigger-120"></i> Nhập UserCode
-                                    </a>
-                                }
-
-
                             </td>
                         </tr>
                     }

@@ -13,7 +13,12 @@ namespace Kztek_Security
         public const string privateKeyFile = "kzPrivateKey.pem";
         public const string licFile = "kzlic.dat";
 
-        public static string EncryptRequest(LicenseRequest request)
+        /// <summary>
+        /// [App] Mã hóa thông tin từ app thành UserCode
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static string CreateUserCode(LicenseRequest request)
         {
             string key = File.ReadAllText(publicKeyFile);
 
@@ -30,7 +35,12 @@ namespace Kztek_Security
             return result;
         }
 
-        public static LicenseRequest DecryptRequest(string encryptedStr)
+        /// <summary>
+        /// [Server] Giải mã usercode thành thông tin 
+        /// </summary>
+        /// <param name="encryptedStr"></param>
+        /// <returns></returns>
+        public static LicenseRequest ReadUserCode(string encryptedStr)
         {
             string key = File.ReadAllText(privateKeyFile);
 
@@ -47,20 +57,33 @@ namespace Kztek_Security
             return result;
         }
 
+        /// <summary>
+        /// [App] Tạo thông tin gửi lên server
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="cdKey"></param>
+        /// <returns></returns>
         public static LicenseRequest CreateLicenseRequest(string appId, string cdKey)
         {
             var request = new LicenseRequest();
             request.PROCESSOR_ID = HardwareInfo.PROCESSOR_ID;
             request.BASEBOARD_ID = HardwareInfo.BASEBOARD_ID;
-            request.CD_KEY = appId;
-            request.APP_ID = cdKey;
+            request.CD_KEY = cdKey;
+            request.APP_ID = appId;
 
             return request;
         }
 
-        public static string CreateLicenseResponse(LicenseRequest request, LicenseInfo info)
+
+        /// <summary>
+        /// [Server] Tạo ActiveKey
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public static string CreateActiveKey(LicenseRequest request, LicenseInfo info)
         {
-            string passphrase = CreateSymPassword(request.PROCESSOR_ID, request.BASEBOARD_ID, request.CD_KEY, request.APP_ID);
+            string passphrase = CreateSymPassword(request.PROCESSOR_ID, request.BASEBOARD_ID, request.APP_ID);
 
             string licInfo_json = JsonConvert.SerializeObject(info);
 
@@ -69,9 +92,15 @@ namespace Kztek_Security
             return encoded_data;
         }
 
-        public static LicenseInfo DecodeLicenseResponse(string encoded_data, string appId, string cdKey)
+        /// <summary>
+        /// [App] Đọc ActiveKey
+        /// </summary>
+        /// <param name="encoded_data"></param>
+        /// <param name="appId"></param>
+        /// <returns></returns>
+        public static LicenseInfo ReadActiveKey(string encoded_data, string appId)
         {
-            string passphrase = CreateSymPassword(HardwareInfo.PROCESSOR_ID, HardwareInfo.BASEBOARD_ID, appId, cdKey);
+            string passphrase = CreateSymPassword(HardwareInfo.PROCESSOR_ID, HardwareInfo.BASEBOARD_ID, appId);
 
             string decoded_data = CryptoProvider.SimpleDecryptWithPassword(encoded_data, passphrase);
 
@@ -92,7 +121,14 @@ namespace Kztek_Security
             return sb.ToString();
         }
 
-        private static string CreateSymPassword(string cpu_id, string board_id, string appId, string cdKey)
+        /// <summary>
+        /// Tạo mật khẩu mã hóa thông tin license
+        /// </summary>
+        /// <param name="cpu_id"></param>
+        /// <param name="board_id"></param>
+        /// <param name="appId"></param>
+        /// <returns></returns>
+        private static string CreateSymPassword(string cpu_id, string board_id, string appId)
         {
             SHA512 sha = SHA512CryptoServiceProvider.Create();
 
@@ -100,7 +136,6 @@ namespace Kztek_Security
             byteArr.AddRange(Encoding.UTF8.GetBytes(cpu_id));
             byteArr.AddRange(Encoding.UTF8.GetBytes(board_id));
             byteArr.AddRange(Encoding.UTF8.GetBytes(appId));
-            byteArr.AddRange(Encoding.UTF8.GetBytes(cdKey));
 
             byte[] hashedBytes = sha.ComputeHash(byteArr.ToArray());
 
@@ -117,10 +152,10 @@ namespace Kztek_Security
 
             //Client tạo request, gửi lên sv thông tin phần cứng
             LicenseRequest req = LicenseGenerator.CreateLicenseRequest(appId, CDKEY);
-            string reqStr = LicenseGenerator.EncryptRequest(req);
+            string reqStr = LicenseGenerator.CreateUserCode(req);
 
             //Server đọc request, tạo response dựa trên thông tin phần cứng
-            LicenseRequest decryptedReq = LicenseGenerator.DecryptRequest(reqStr);
+            LicenseRequest decryptedReq = LicenseGenerator.ReadUserCode(reqStr);
 
             var info = new LicenseInfo()
             {
@@ -130,10 +165,10 @@ namespace Kztek_Security
                 ProjectName = "FUTECH"
             };
 
-            string respStr = LicenseGenerator.CreateLicenseResponse(req, info);
+            string respStr = LicenseGenerator.CreateActiveKey(req, info);
 
             //Client đọc response, lưu vào file
-            var licData = LicenseGenerator.DecodeLicenseResponse(respStr, appId, CDKEY);
+            var licData = LicenseGenerator.ReadActiveKey(respStr, appId);
         }
     }
 }

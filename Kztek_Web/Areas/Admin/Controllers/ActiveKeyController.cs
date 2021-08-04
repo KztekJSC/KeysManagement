@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Kztek_Core.Models;
 using Kztek_Library.Configs;
 using Kztek_Library.Helpers;
 using Kztek_Library.Models;
 using Kztek_Model.Models;
+using Kztek_Security;
 using Kztek_Service.Admin;
 using Kztek_Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +88,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
             {
                 foreach (var item in lst)
                 {
-                    list.Add(new SelectListModel { ItemValue = item.Id, ItemText = string.Format("{0}{1}{2}",item.Name,!string.IsNullOrEmpty(item.Phone) ? " - " + item.Phone : "", !string.IsNullOrEmpty(item.Address) ? " - " + item.Address : "") });
+                    list.Add(new SelectListModel { ItemValue = item.Id, ItemText = string.Format("{0}{1}{2}", item.Name, !string.IsNullOrEmpty(item.Phone) ? " - " + item.Phone : "", !string.IsNullOrEmpty(item.Address) ? " - " + item.Address : "") });
                 }
             }
 
@@ -156,8 +158,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
             return View();
         }
 
-      
-        public async Task<IActionResult> Partial_CDKey(string app,string codes)
+
+        public async Task<IActionResult> Partial_CDKey(string app, string codes)
         {
             var list = await _CDKeyService.GetByApp(app);
 
@@ -169,7 +171,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
                 {
                     var objApp = apps.FirstOrDefault(n => n.Id == item.AppId);
 
-                    item.AppId = objApp != null ? objApp.Name + " - " + objApp.Code : "";                   
+                    item.AppId = objApp != null ? objApp.Name + " - " + objApp.Code : "";
                 }
             }
 
@@ -201,7 +203,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> Save(ActiveKey model)
         {
-            var mes = new MessageReport(false,"Có lỗi xảy ra!");
+            var mes = new MessageReport(false, "Có lỗi xảy ra!");
 
             if (string.IsNullOrEmpty(model.CDKey))
             {
@@ -230,7 +232,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
                         var modelActive = new ActiveKey
                         {
                             Id = Guid.NewGuid().ToString(),
-                            AppId = item.AppId,                         
+                            AppId = item.AppId,
                             CDKey = item.Code,
                             CustomerId = model.CustomerId,
                             DateCreated = DateTime.Now,
@@ -259,7 +261,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
                 mes = new MessageReport(false, ex.Message);
                 return await Task.FromResult(Json(mes));
             }
-           
+
             return await Task.FromResult(Json(mes));
         }
         #endregion
@@ -267,9 +269,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
         #region Nhập UserCode
         public async Task<IActionResult> Modal_UserCode(string id)
         {
-
             ViewBag.Id = id;
-            return PartialView();
+            return await Task.FromResult(PartialView());
         }
 
         public async Task<IActionResult> SaveUserCode(ActiveKey model)
@@ -296,9 +297,25 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
                 if (obj != null)
                 {
-                    obj.UserCode = model.UserCode;
+                    //Lấy thông tin CDKEY
+                    var objCdKey = await _CDKeyService.GetByCode(obj.CDKey);
 
-                    mes = await _ActiveKeyService.Update(obj);
+                    if (objCdKey != null)
+                    {
+                        //Check usercode hợp lệ
+                        var activeCode = await GetActiveCode(model.UserCode, objCdKey);
+
+                        if (!string.IsNullOrWhiteSpace(activeCode))
+                        {
+                            obj.KeyActive = activeCode;
+                            obj.UserCode = model.UserCode;
+                            mes = await _ActiveKeyService.Update(obj);
+                        }
+                        else
+                        {
+                            mes = new MessageReport(false, "Usercode không hợp lệ");
+                        }
+                    }
                 }
                 else
                 {
@@ -321,16 +338,47 @@ namespace Kztek_Web.Areas.Admin.Controllers
             //nếu lưu usercode  thành công thì download
             if (mes.isSuccess)
             {
-                //viết hàm download ở đây
+
             }
 
             return View();
         }
+        public async Task<string> GetActiveCode(string reqStr, CDKey cdkey)
+        {
+            string responseStr = string.Empty;
+            try
+            {
+                LicenseRequest decryptedReq = LicenseGenerator.ReadUserCode(reqStr);
+
+                var info = new LicenseInfo()
+                {
+                    CD_KEY = decryptedReq.CD_KEY,
+                    ExpireDate = cdkey.ExpireDate,
+                    IsExpire = cdkey.IsExpire,
+                    ProjectName = ""
+                };
+
+                responseStr = LicenseGenerator.CreateActiveKey(decryptedReq, info);
+            }
+            catch { }
+
+            return await Task.FromResult(responseStr);
+        }
+
         public async Task<IActionResult> Download(string id)
         {
+            var activeKey = await _ActiveKeyService.GetById(id);
 
-
-            return View();
+            if (activeKey != null)
+            {
+                byte[] fileBytes = Encoding.UTF8.GetBytes(activeKey.KeyActive);
+                string fileName = "license.dat";
+                return await Task.FromResult(File(fileBytes, System.Net.Mime.MediaTypeNames.Text.Plain, fileName));
+            }
+            else
+            {
+                return await Task.FromResult(new EmptyResult());
+            }
         }
         #endregion
 

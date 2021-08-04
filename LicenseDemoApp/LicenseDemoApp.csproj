@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="kzPublicKey.pem" />
+    <None Remove="LicenseDemoApp.cs~RF1fd664ea.TMP" />
+    <None Remove="LicenseFile.cs~RF200740f8.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="kzPublicKey.pem">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kztek_Security\Kztek_Security.csproj" />
+  </ItemGroup>
+
+</Project>
