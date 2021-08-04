@@ -18,9 +18,6 @@ namespace Kztek_Web
     {
         public static void Main(string[] args)
         {
-            var req = LicenseGenerator.CreateLicenseRequest("", "0cb9a862-5acc-4bfc-aa8b-ab2acc71c897");
-            var reqstr = LicenseGenerator.CreateUserCode(req);
-
             CreateWebHostBuilder(args).Build().Run();
         }
 
