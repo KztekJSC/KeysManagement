@@ -158,7 +158,6 @@ namespace Kztek_Web.Areas.Admin.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Partial_CDKey(string app, string codes)
         {
             var list = await _CDKeyService.GetByApp(app);
@@ -303,17 +302,17 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     if (objCdKey != null)
                     {
                         //Check usercode hợp lệ
-                        var activeCode = await GetActiveCode(model.UserCode, objCdKey);
+                        var activeCodeReport = await GetActiveCode(model.UserCode, objCdKey);
 
-                        if (!string.IsNullOrWhiteSpace(activeCode))
+                        if (activeCodeReport.isSuccess)
                         {
-                            obj.KeyActive = activeCode;
+                            obj.KeyActive = activeCodeReport.Message;
                             obj.UserCode = model.UserCode;
                             mes = await _ActiveKeyService.Update(obj);
                         }
                         else
                         {
-                            mes = new MessageReport(false, "Usercode không hợp lệ");
+                            mes = activeCodeReport;
                         }
                     }
                 }
@@ -343,26 +342,44 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
             return View();
         }
-        public async Task<string> GetActiveCode(string reqStr, CDKey cdkey)
+
+        public async Task<MessageReport> GetActiveCode(string reqStr, CDKey cdkey)
         {
-            string responseStr = string.Empty;
+            var report = new MessageReport() { isSuccess = false, Message = "Usercode không hợp lệ" };
             try
             {
+                var objApp = await _AppService.GetById(cdkey.AppId);
+
                 LicenseRequest decryptedReq = LicenseGenerator.ReadUserCode(reqStr);
 
-                var info = new LicenseInfo()
+                if(decryptedReq.CD_KEY != cdkey.Code)
                 {
-                    CD_KEY = decryptedReq.CD_KEY,
-                    ExpireDate = cdkey.ExpireDate,
-                    IsExpire = cdkey.IsExpire,
-                    ProjectName = ""
-                };
+                    report.Message = "CDKey không khớp";
+                }    
+                else if(decryptedReq.APP_CODE != objApp.Code)
+                {
+                    report.Message = "APP_CODE không khớp";
+                }
+                else
+                {
+                    var info = new LicenseInfo()
+                    {
+                        CD_KEY = decryptedReq.CD_KEY,
+                        ExpireDate = cdkey.ExpireDate,
+                        IsExpire = cdkey.IsExpire,
+                        ProjectName = ""
+                    };
 
-                responseStr = LicenseGenerator.CreateActiveKey(decryptedReq, info);
+                    var responseStr = LicenseGenerator.CreateActiveKey(decryptedReq, info);
+
+                    report.isSuccess = true;
+                    report.Message = responseStr;
+                }
+
             }
             catch { }
 
-            return await Task.FromResult(responseStr);
+            return await Task.FromResult(report);
         }
 
         public async Task<IActionResult> Download(string id)

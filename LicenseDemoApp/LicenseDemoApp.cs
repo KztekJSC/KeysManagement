@@ -15,7 +15,7 @@ namespace LicenseDemoApp
 {
     public partial class LicenseDemoApp : Form
     {
-        public static string appId = "9dfa7930-19c3-448b-b38a-00778aefb4f9";
+        public static string APP_CODE = "APPTESTKZTEK";
         public LicenseDemoApp()
         {
             InitializeComponent();
@@ -25,7 +25,7 @@ namespace LicenseDemoApp
         {
             txtCPU.Text = HardwareInfo.PROCESSOR_ID;
             txtBOARDID.Text = HardwareInfo.BASEBOARD_ID;
-            txtAppId.Text = appId;
+            txtAppCode.Text = APP_CODE;
             ReadLicense();
         }
 
@@ -34,7 +34,7 @@ namespace LicenseDemoApp
             try
             {
                 var licdata = File.ReadAllText("license.dat");
-                var licInfo = LicenseGenerator.ReadActiveKey(licdata, txtAppId.Text);
+                var licInfo = LicenseGenerator.ReadActiveKey(licdata, txtAppCode.Text);
 
                 lbStatus.Text = licInfo.IsExpire ? "Trial" : "Full";
                 lbExpire.Text = licInfo.IsExpire ? licInfo.ExpireDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : "No Expire";

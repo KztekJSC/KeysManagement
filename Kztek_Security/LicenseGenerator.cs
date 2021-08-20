@@ -69,7 +69,7 @@ namespace Kztek_Security
             request.PROCESSOR_ID = HardwareInfo.PROCESSOR_ID;
             request.BASEBOARD_ID = HardwareInfo.BASEBOARD_ID;
             request.CD_KEY = cdKey;
-            request.APP_ID = appId;
+            request.APP_CODE = appId;
 
             return request;
         }
@@ -83,7 +83,7 @@ namespace Kztek_Security
         /// <returns></returns>
         public static string CreateActiveKey(LicenseRequest request, LicenseInfo info)
         {
-            string passphrase = CreateSymPassword(request.PROCESSOR_ID, request.BASEBOARD_ID, request.APP_ID);
+            string passphrase = CreateSymPassword(request.PROCESSOR_ID, request.BASEBOARD_ID, request.APP_CODE);
 
             string licInfo_json = JsonConvert.SerializeObject(info);
 
@@ -146,12 +146,12 @@ namespace Kztek_Security
 
         public static void Demo()
         {
-            //Tạo appId và CDKEY ngẫu nhiên
-            string appId = Guid.NewGuid().ToString();
+            //Tạo appCode và CDKEY ngẫu nhiên
+            string appCode = Guid.NewGuid().ToString();
             string CDKEY = Guid.NewGuid().ToString();
 
             //Client tạo request, gửi lên sv thông tin phần cứng
-            LicenseRequest req = LicenseGenerator.CreateLicenseRequest(appId, CDKEY);
+            LicenseRequest req = LicenseGenerator.CreateLicenseRequest(appCode, CDKEY);
             string reqStr = LicenseGenerator.CreateUserCode(req);
 
             //Server đọc request, tạo response dựa trên thông tin phần cứng
@@ -168,7 +168,7 @@ namespace Kztek_Security
             string respStr = LicenseGenerator.CreateActiveKey(req, info);
 
             //Client đọc response, lưu vào file
-            var licData = LicenseGenerator.ReadActiveKey(respStr, appId);
+            var licData = LicenseGenerator.ReadActiveKey(respStr, appCode);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Kztek_Security
 
         public string BASEBOARD_ID { get; set; }
 
-        public string APP_ID { get; set; }
+        public string APP_CODE { get; set; }
 
         public string CD_KEY { get; set; }
     }

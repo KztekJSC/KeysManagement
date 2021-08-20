@@ -34,7 +34,7 @@ namespace LicenseDemoApp
             this.txtBOARDID = new System.Windows.Forms.TextBox();
             this.txtCPU = new System.Windows.Forms.TextBox();
             this.txtCDKEY = new System.Windows.Forms.TextBox();
-            this.txtAppId = new System.Windows.Forms.TextBox();
+            this.txtAppCode = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,7 +54,7 @@ namespace LicenseDemoApp
             this.groupBox1.Controls.Add(this.txtBOARDID);
             this.groupBox1.Controls.Add(this.txtCPU);
             this.groupBox1.Controls.Add(this.txtCDKEY);
-            this.groupBox1.Controls.Add(this.txtAppId);
+            this.groupBox1.Controls.Add(this.txtAppCode);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
@@ -101,13 +101,13 @@ namespace LicenseDemoApp
             this.txtCDKEY.Size = new System.Drawing.Size(312, 29);
             this.txtCDKEY.TabIndex = 10;
             // 
-            // txtAppId
+            // txtAppCode
             // 
-            this.txtAppId.Location = new System.Drawing.Point(123, 37);
-            this.txtAppId.Name = "txtAppId";
-            this.txtAppId.ReadOnly = true;
-            this.txtAppId.Size = new System.Drawing.Size(312, 29);
-            this.txtAppId.TabIndex = 11;
+            this.txtAppCode.Location = new System.Drawing.Point(123, 37);
+            this.txtAppCode.Name = "txtAppCode";
+            this.txtAppCode.ReadOnly = true;
+            this.txtAppCode.Size = new System.Drawing.Size(312, 29);
+            this.txtAppCode.TabIndex = 11;
             // 
             // label4
             // 
@@ -139,11 +139,11 @@ namespace LicenseDemoApp
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(60, 40);
+            this.label1.Location = new System.Drawing.Point(24, 40);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 21);
+            this.label1.Size = new System.Drawing.Size(93, 21);
             this.label1.TabIndex = 5;
-            this.label1.Text = "AppID :";
+            this.label1.Text = "APP_CODE :";
             // 
             // groupBox2
             // 
@@ -219,7 +219,7 @@ namespace LicenseDemoApp
         private System.Windows.Forms.TextBox txtBOARDID;
         private System.Windows.Forms.TextBox txtCPU;
         private System.Windows.Forms.TextBox txtCDKEY;
-        private System.Windows.Forms.TextBox txtAppId;
+        private System.Windows.Forms.TextBox txtAppCode;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;

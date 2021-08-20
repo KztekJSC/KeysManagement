@@ -23,7 +23,7 @@ namespace LicenseDemoApp
         {
             if (string.IsNullOrWhiteSpace(txtCDKEY.Text)) return;
 
-            LicenseRequest licRequest = LicenseGenerator.CreateLicenseRequest(LicenseDemoApp.appId, txtCDKEY.Text.Trim());
+            LicenseRequest licRequest = LicenseGenerator.CreateLicenseRequest(LicenseDemoApp.APP_CODE, txtCDKEY.Text.Trim());
             string reqStr = LicenseGenerator.CreateUserCode(licRequest);
             txtUserCode.Text = reqStr;
         }
@@ -33,7 +33,7 @@ namespace LicenseDemoApp
             try
             {
                 var licdata = txtActiveCode.Text;
-                var licInfo = LicenseGenerator.ReadActiveKey(licdata, LicenseDemoApp.appId);
+                var licInfo = LicenseGenerator.ReadActiveKey(licdata, LicenseDemoApp.APP_CODE);
 
                 File.WriteAllText("license.dat", licdata);
 
