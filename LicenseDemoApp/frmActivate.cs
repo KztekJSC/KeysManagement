@@ -22,7 +22,6 @@ namespace LicenseDemoApp
         private void btnGetCode_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtCDKEY.Text)) return;
-
             LicenseRequest licRequest = LicenseGenerator.CreateLicenseRequest(LicenseDemoApp.APP_CODE, txtCDKEY.Text.Trim());
             string reqStr = LicenseGenerator.CreateUserCode(licRequest);
             txtUserCode.Text = reqStr;

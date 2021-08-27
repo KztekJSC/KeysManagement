@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>bin\Debug\net5.0-windows\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Kztek.Models">
+      <HintPath>..\..\MY SOURCE\Kztek.Library\Kztek.Models\bin\Debug\netstandard1.2\Kztek.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="Kztek.Tools">
+      <HintPath>..\..\MY SOURCE\Kztek.Library\Kztek.Tools\bin\Debug\net5.0\Kztek.Tools.dll</HintPath>
+    </Reference>
+    <Reference Include="Kztek_Security">
+      <HintPath>..\Kztek_Security\bin\Debug\netstandard2.0\Kztek_Security.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management">
+      <HintPath>bin\Debug\net5.0-windows\System.Management.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
