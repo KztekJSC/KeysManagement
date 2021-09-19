@@ -12,10 +12,9 @@ using KztekKeyRegister.Models;
 using System.IO;
 using Kztek_Security;
 using System.Diagnostics;
-using Kztek.CommonUI5;
 using System.Runtime.InteropServices;
 
-namespace KztekKeyRegister
+namespace KztekKeyRegister_NFW
 {
     public partial class KeyMng : Form
     {
@@ -34,11 +33,11 @@ namespace KztekKeyRegister
         private string ActiveFilepath = string.Empty;
         private readonly Dictionary<string, string> Licenses = new Dictionary<string, string>();
         private bool _IsLicenseValid = false;
-        private DateTime? _ExpiredDate ;
+        private DateTime? _ExpiredDate;
         private KeyStatus _ActiveStatus = KeyStatus.Unregistered;
         public DateTime? ExpiredDate { get => _ExpiredDate; }  //readonly
         public bool IsLicenseValid { get => _IsLicenseValid; }  //readonly
-        public KeyStatus ActiveStatus { get => _ActiveStatus;}
+        public KeyStatus ActiveStatus { get => _ActiveStatus; }
 
         internal KeyMng()
         {
@@ -61,7 +60,7 @@ namespace KztekKeyRegister
                 var licensedata = await CommonToolsFunc.ReadFileToText(dt.ActivecodeFilePath);
                 if (string.IsNullOrEmpty(licensedata)) return false;
                 var licInfo = LicenseGenerator.ReadActiveKey(licensedata, _AppCode);
-                if(licInfo != null)
+                if (licInfo != null)
                 {
                     var Encodedata = ProcessLicdata(licInfo);
                     if (_IsLicenseValid) return true;
@@ -70,7 +69,7 @@ namespace KztekKeyRegister
                 }
                 return false;
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -79,14 +78,14 @@ namespace KztekKeyRegister
         private void CreateListSoftware()
         {
             Licenses.Add("KZ_VC_V1_WD", "KztekVehicleCounting");
-            Licenses.Add("APPTESTKZTEK", "ABCXYZ");
+            Licenses.Add("APPTESTKZTEK", "app test");
             Licenses.Add("ACCESS", "IAccess");
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             var ctrl = sender as Button;
-            if(ctrl == btnCopyUserCode)
+            if (ctrl == btnCopyUserCode)
                 Clipboard.SetText(txtUserCode.Text.Trim(), TextDataFormat.UnicodeText);
             else Clipboard.SetText(licinfo.CD_KEY, TextDataFormat.UnicodeText);
         }
@@ -95,7 +94,8 @@ namespace KztekKeyRegister
         {
             if (String.IsNullOrEmpty(txtCdkey.Text.Trim()))
             {
-                KzMessageBox.Show( "Thông báo", "Vui lòng nhập cd key!", MessboxButton.OKCancel, MessboxType.Warning);
+                /* KzMessageBox.Show("Thông báo", "Vui lòng nhập cd key!", MessboxButton.OKCancel, MessboxType.Warning);*/
+                MessageBox.Show("Vui lòng nhập cd key!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             else
@@ -112,7 +112,7 @@ namespace KztekKeyRegister
 
         private void btnPasteCdKey_Click(object sender, EventArgs e)
         {
-             txtCdkey.Text = Clipboard.GetText().Trim();
+            txtCdkey.Text = Clipboard.GetText().Trim();
         }
 
         private void btnExportUsercode_Click(object sender, EventArgs e)
@@ -155,7 +155,8 @@ namespace KztekKeyRegister
                 if (licInfo != null)
                 {
                     tickActivated.Visible = true;
-                    var result = KzMessageBox.Show("Thông báo", $"Kích hoạt bản quyền thành công!\n\rTrở về phần mềm {encodeData.Software}?", MessboxButton.OKCancel, MessboxType.Info);
+                    /*var result = KzMessageBox.Show("Thông báo", "Kích hoạt bản quyền thành công!\n\rQuay trở về phần mềm chính?", MessboxButton.OKCancel, MessboxType.Info);*/
+                    var result = MessageBox.Show($"Kích hoạt bản quyền thành công!\n\rMở lại phần mềm {encodeData.Software}?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                     _IsLicenseValid = true;
                     this.licinfo = licInfo;
                     KeyManageConfig key = new KeyManageConfig()
@@ -163,7 +164,7 @@ namespace KztekKeyRegister
                         ActivecodeFilePath = ActiveFilepath,
                     };
                     ConfigsManager<KeyManageConfig>.SaveConfig(key, ManageConfig);
-                    if(result != DialogResult.OK) 
+                    if (result != DialogResult.OK)
                         ShowLicenseData(encodeData);
                     else
                     {
@@ -171,9 +172,11 @@ namespace KztekKeyRegister
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                 KzMessageBox.Show("Kích hoạt thất bại", $"Active key không hợp lệ. Vui lòng thử lại!\r\n{ex.Message}",  MessboxButton.OKCancel, MessboxType.Error);
+                /* KzMessageBox.Show("Kích hoạt thất bại", $"Active key không hợp lệ. Vui lòng thử lại!\r\n{ex.Message}", MessboxButton.OKCancel, MessboxType.Error);*/
+                MessageBox.Show($"Active key không hợp lệ. Vui lòng thử lại!\r\n{ex.Message}", "Kích hoạt thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
@@ -194,7 +197,7 @@ namespace KztekKeyRegister
                     _IsLicenseValid = false;
                     _ActiveStatus = KeyStatus.Exprired;
                 }
-                else if(timeleft.TotalDays < 10)
+                else if (timeleft.TotalDays < 10)
                 {
                     Status = "Sắp hết hạn";
                     _ActiveStatus = KeyStatus.ExprireSoon;
@@ -229,12 +232,12 @@ namespace KztekKeyRegister
             tbl.Controls.Add(newLabel("Loại License:"));
             tbl.Controls.Add(newLabel($"{info.Software}"));
             tbl.Controls.Add(newLabel("Trạng thái:"));
-            tbl.Controls.Add(newLabel($"{info.Status}"));  
+            tbl.Controls.Add(newLabel($"{info.Status}"));
             tbl.Controls.Add(newLabel("Hạn dùng:"));
             tbl.Controls.Add(newLabel($"{info.DateExpire}"));
             tbl.Controls.Add(newLabel("CD-KEY:"));
             tbl.Controls.Add(newLabel($"{info.Cdkey}"));
-            tbl.Controls.Add(btnCdkeyCopy,1,4);
+            tbl.Controls.Add(btnCdkeyCopy, 1, 4);
             btnCdkeyCopy.Visible = true;
             tbl.Dock = DockStyle.Fill;
             tickLinklicense.Visible = true;
@@ -269,10 +272,6 @@ namespace KztekKeyRegister
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-
-        }
 
         private void Manage_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -291,25 +290,25 @@ namespace KztekKeyRegister
                 psi.FileName = filename;
                 System.Diagnostics.Process.Start(psi);
 
-            /*    var runningProcess = System.Diagnostics.Process.GetProcessesByName("chrome");
-                if (runningProcess.Length != 0)
-                {
-                    System.Diagnostics.Process.Start("chrome", filename);
-                }
-                runningProcess = System.Diagnostics.Process.GetProcessesByName("firefox");
-                if (runningProcess.Length != 0)
-                {
-                    System.Diagnostics.Process.Start("firefox", filename);
-                }
-                runningProcess = System.Diagnostics.Process.GetProcessesByName("iexplore");
-                if (runningProcess.Length != 0)
-                {
-                    System.Diagnostics.Process.Start("iexplore", filename);
-                }*/
+                /*    var runningProcess = System.Diagnostics.Process.GetProcessesByName("chrome");
+                    if (runningProcess.Length != 0)
+                    {
+                        System.Diagnostics.Process.Start("chrome", filename);
+                    }
+                    runningProcess = System.Diagnostics.Process.GetProcessesByName("firefox");
+                    if (runningProcess.Length != 0)
+                    {
+                        System.Diagnostics.Process.Start("firefox", filename);
+                    }
+                    runningProcess = System.Diagnostics.Process.GetProcessesByName("iexplore");
+                    if (runningProcess.Length != 0)
+                    {
+                        System.Diagnostics.Process.Start("iexplore", filename);
+                    }*/
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show("Không tìm thấy file");
             }
         }
 
@@ -344,7 +343,6 @@ namespace KztekKeyRegister
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-
 
     }
 }

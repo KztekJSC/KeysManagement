@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
+    <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,11 +18,8 @@
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>bin\Debug\net5.0-windows\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="Kztek.Models">
-      <HintPath>..\..\MY SOURCE\Kztek.Library\Kztek.Models\bin\Debug\netstandard1.2\Kztek.Models.dll</HintPath>
-    </Reference>
-    <Reference Include="Kztek.Tools">
-      <HintPath>..\..\MY SOURCE\Kztek.Library\Kztek.Tools\bin\Debug\net5.0\Kztek.Tools.dll</HintPath>
+    <Reference Include="Kztek.CommonUI5">
+      <HintPath>..\..\MY SOURCE\Kztek.Library\Kztek.CommonUI5\Kztek.CommonUI5\bin\Release\net5.0-windows\Kztek.CommonUI5.dll</HintPath>
     </Reference>
     <Reference Include="Kztek_Security">
       <HintPath>..\Kztek_Security\bin\Debug\netstandard2.0\Kztek_Security.dll</HintPath>

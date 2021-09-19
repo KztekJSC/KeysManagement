@@ -1,5 +1,5 @@
-﻿using Kztek.Models.Common;
-using Kztek.Tools;
+﻿using KztekKeyRegister.Models;
+using KztekKeyRegister.Tools;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -70,7 +70,7 @@ namespace KztekKeyRegister
         {
             if (File.Exists(LoginConfigFile))
             {
-                var dt = Kztek.Tools.ConfigManage.ConfigsManager<LoginConfigModel>.LoadConfig(LoginConfigFile);
+                var dt = ConfigsManager<LoginConfigModel>.LoadConfig(LoginConfigFile);
                 if (dt != null && !String.IsNullOrEmpty(dt.UserName))
                 {
                     txtPassword.Text = CryptorEngine.Decrypt(dt.Password, true);
@@ -126,7 +126,7 @@ namespace KztekKeyRegister
                     Password = CryptorEngine.Encrypt(model.Password, true),
                     ServerUrl = txtServer.Text.Trim(),
                 };
-                Kztek.Tools.ConfigManage.ConfigsManager<LoginConfigModel>.SaveConfig(dt, $"{AppDomain.CurrentDomain.BaseDirectory}LoginConfigs.xml");
+                ConfigsManager<LoginConfigModel>.SaveConfig(dt, $"{AppDomain.CurrentDomain.BaseDirectory}LoginConfigs.xml");
                 MessageBox.Show($"Đăng nhập thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnOK.Enabled = false;
                 btnLogout.Enabled = true;
@@ -150,7 +150,7 @@ namespace KztekKeyRegister
                 Password = string.Empty,
                 ServerUrl = txtServer.Text.Trim(),
             };
-            Kztek.Tools.ConfigManage.ConfigsManager<LoginConfigModel>.SaveConfig(dt, $"{AppDomain.CurrentDomain.BaseDirectory}LoginConfigs.xml");
+            ConfigsManager<LoginConfigModel>.SaveConfig(dt, $"{AppDomain.CurrentDomain.BaseDirectory}LoginConfigs.xml");
             MessageBox.Show($"Đăng xuất thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             _LoggedIn = false;
             btnOK.Enabled = true;

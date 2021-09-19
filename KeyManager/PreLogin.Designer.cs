@@ -96,7 +96,7 @@ namespace KztekKeyRegister
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::KztekKeyRegister.Properties.Resources.HomeServer_icon_icons_com_55232;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.pictureBox1.Name = "pictureBox1";
