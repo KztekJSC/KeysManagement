@@ -54,14 +54,16 @@
         <table class="table  table-bordered table-hover">
             <thead>
                 <tr>
-                    <th class="text-center">Tên phần mềm</th>
+                    <th class="text-center">Phần mềm</th>
+                    <th class="text-center">Dự án</th>
+                    <th class="text-center">Khách hàng</th>
                     <th class="text-center">Key</th>
                     <th class="text-center hidden-480">Trạng thái</th>
-                    <th class="text-center" width="150">Check hạn</th>
-                    <th class="text-center" width="150">Hạn</th>
+                    <th class="text-center" width="100">Check hạn</th>
+                    <th class="text-center" width="100">Hạn</th>
                     <th class="text-center" width="150">Ngày tạo</th>
-                    <th class="text-center" width="150">Người tạo</th>
-                    <th class="text-center" width="80"></th>
+                    <th class="text-center" width="120">Người tạo</th>
+                    <th class="text-center" width="50"></th>
                 </tr>
             </thead>
 
@@ -74,7 +76,15 @@
                             <td class="text-left">
                                 @item.AppId
                             </td>
-
+                             <td class="text-left">
+                                @item.ProjectId
+                            </td>
+                             <td class="text-left">
+                                 @if (!string.IsNullOrEmpty(item.CustomerId))
+                                 {
+                                     @Html.Raw(item.CustomerId)
+                                 }
+                             </td>
                             <td class="text-left hidden-480">
                                 @item.Code
                             </td>
@@ -109,7 +119,7 @@
                             <td class="center">
                                 @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
                             </td>
-                            <td class="text-left">
+                            <td class="center">
                                 @item.UserCreated
                             </td>
                             <td class="center">

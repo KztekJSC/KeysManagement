@@ -134,7 +134,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
                     var objCus = cuss.FirstOrDefault(n => n.Id == item.CustomerId);
 
-                    item.CustomerId = objCus != null ? string.Format("<p>{0}</p><p>{1}</p><p>{2}</p>", objCus.Name, objCus.Phone, objCus.Address) : "";
+                    item.CustomerId = objCus != null ? string.Format("<span>{0} - {1}</span><p>{2}</p>", objCus.Name, objCus.Phone, objCus.Address) : "";
                 }
             }
 

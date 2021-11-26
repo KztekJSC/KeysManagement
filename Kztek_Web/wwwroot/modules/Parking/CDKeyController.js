@@ -37,7 +37,9 @@ var CDKeyController = {
           
             var model = {
                 Quantity: quan,
-                App: frm.find("#AppId").val()
+                App: frm.find("#AppId").val(),
+                ProjectId: frm.find("#ProjectId").val(),
+                CustomerId: frm.find("#CustomerId").val()
             }
 
             JSHelper.AJAX_HttpPost('/Admin/CDKey/Save', model)

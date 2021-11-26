@@ -16,17 +16,25 @@ namespace Kztek_Web.Areas.Admin.Controllers
     [Area(AreaConfig.Admin)]
     public class CDKeyController : Controller
     {
+        #region service
         private ICDKeyService _CDKeyService;
         private IAppService _AppService;
+        private IProjectService _ProjectService;
+        private ICustomerService _CustomerService;
         private IUserService _UserService;
         private IActiveKeyService _ActiveKeyService;
-        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService, IActiveKeyService _ActiveKeyService)
+        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService, IActiveKeyService _ActiveKeyService, IProjectService _ProjectService, ICustomerService _CustomerService)
         {
             this._CDKeyService = _CDKeyService;
             this._AppService = _AppService;
             this._UserService = _UserService;
             this._ActiveKeyService = _ActiveKeyService;
+            this._ProjectService = _ProjectService;
+            this._CustomerService = _CustomerService;
         }
+        #endregion
+
+        #region Danh sách
 
         [CheckSessionCookie(AreaConfig.Admin)]
         public async Task<IActionResult> Index(string key = "", int page = 1, string AreaCode = "", string selectedId = "")
@@ -37,8 +45,10 @@ namespace Kztek_Web.Areas.Admin.Controllers
             {
                 var users = await _UserService.GetAll();
                 var apps = await _AppService.GetAll();
+                var projects = await GetProject();
+                var customers = await _CustomerService.GetAll();
 
-                foreach(var item in gridmodel.Data)
+                foreach (var item in gridmodel.Data)
                 {
                     var objUser = users.FirstOrDefault(n => n.Id == item.UserCreated);
 
@@ -47,6 +57,14 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     var objApp = apps.FirstOrDefault(n => n.Id == item.AppId);
 
                     item.AppId = objApp != null ? objApp.Name + " - " + objApp.Code : "";
+
+                    var objProject = projects.Data.FirstOrDefault(n => n.ItemValue == item.ProjectId);
+
+                    item.ProjectId = objProject != null ? objProject.ItemText : "";
+
+                    var objCus = customers.FirstOrDefault(n => n.Id == item.CustomerId);
+
+                    item.CustomerId = objCus != null ? string.Format("<span>{0} - {1}</span><p>{2}</p>", objCus.Name, objCus.Phone, objCus.Address) : "";
                 }
             }
 
@@ -58,6 +76,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
             return View(gridmodel);
         }
+        #endregion
 
         #region DDL   
 
@@ -77,6 +96,54 @@ namespace Kztek_Web.Areas.Admin.Controllers
             {
                 Placeholder = await LanguageHelper.GetLanguageText("STATICLIST:DEFAULT"),
                 IdSelectList = "AppId",
+                isMultiSelect = false,
+                Selecteds = !string.IsNullOrEmpty(selecteds) ? selecteds : "",
+                Data = list
+            };
+
+            return a;
+        }
+
+        public async Task<SelectListModel_Chosen> GetProject(string selecteds = "")
+        {
+            var list = new List<SelectListModel> { new SelectListModel { ItemValue = "", ItemText = "- Lựa chọn -" } };
+            var lst = await _ProjectService.GetAll();
+            if (lst.Any())
+            {
+                foreach (var item in lst)
+                {
+                    list.Add(new SelectListModel { ItemValue = item.Id, ItemText = item.Name });
+                }
+            }
+
+            var a = new SelectListModel_Chosen
+            {
+                Placeholder = await LanguageHelper.GetLanguageText("STATICLIST:DEFAULT"),
+                IdSelectList = "ProjectId",
+                isMultiSelect = false,
+                Selecteds = !string.IsNullOrEmpty(selecteds) ? selecteds : "",
+                Data = list
+            };
+
+            return a;
+        }
+
+        public async Task<SelectListModel_Chosen> GetCustomer(string selecteds = "")
+        {
+            var list = new List<SelectListModel> { new SelectListModel {ItemValue = "", ItemText = "- Lựa chọn -" } };
+            var lst = await _CustomerService.GetAll();
+            if (lst.Any())
+            {
+                foreach (var item in lst)
+                {
+                    list.Add(new SelectListModel { ItemValue = item.Id, ItemText = item.Name + " - " + item.Phone });
+                }
+            }
+
+            var a = new SelectListModel_Chosen
+            {
+                Placeholder = await LanguageHelper.GetLanguageText("STATICLIST:DEFAULT"),
+                IdSelectList = "CustomerId",
                 isMultiSelect = false,
                 Selecteds = !string.IsNullOrEmpty(selecteds) ? selecteds : "",
                 Data = list
@@ -256,10 +323,15 @@ namespace Kztek_Web.Areas.Admin.Controllers
         public async Task<IActionResult> Modal_CreateKey()
         {
             ViewBag.App = await GetApp("");
+
+            ViewBag.Project = await GetProject("");
+
+            ViewBag.Customer = await GetCustomer("");
+
             return PartialView();
         }
 
-        public async Task<IActionResult> Save(int Quantity,string App)
+        public async Task<IActionResult> Save(int Quantity,string App,string ProjectId,string CustomerId)
         {
             var mes = new MessageReport(false, "Có lỗi xảy ra!");
 
@@ -277,7 +349,9 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     UserCreated = user != null ? user.UserId : "",
                     Code = Guid.NewGuid().ToString(),
                     ExpireDate = DateTime.Now.AddDays(7),
-                    IsExpire = false
+                    IsExpire = false,
+                    CustomerId = CustomerId,
+                    ProjectId = ProjectId
                 };
 
                 mes = await CreateKey(model);
@@ -288,12 +362,12 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     {
                         AppId = App,
                         CDKey = model.Code,
-                        CustomerId = "",
+                        CustomerId = model.CustomerId,
                         DateCreated = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
                         IsDeleted = false,
                         KeyActive = "",
-                        ProjectId = "",
+                        ProjectId = model.ProjectId,
                         UserCode = "",
                         UserCreated = user != null ? user.UserId : ""
                     };

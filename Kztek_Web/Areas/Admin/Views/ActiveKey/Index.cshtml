@@ -52,9 +52,9 @@
                     <th class="text-center">Khách hàng</th>
                     <th class="text-center">Dự án</th>
                     <th class="text-center" width="150">Ngày tạo CDK</th>
-                    <th class="text-center" width="150">Người tạo CDK</th>
+                    <th class="text-center" width="100">Người tạo CDK</th>
                     <th class="text-center" width="150">Ngày tạo AK</th>
-                    <th class="text-center" width="150">Người tạo AK</th>
+                    <th class="text-center" width="100">Người tạo AK</th>
                 </tr>
             </thead>
 
@@ -101,7 +101,10 @@
                                 }
                             </td>
                             <td class="text-left hidden-480">
-                                @item.CustomerId
+                                @if (!string.IsNullOrEmpty(item.CustomerId))
+                                {
+                                    @Html.Raw(item.CustomerId)
+                                }
                             </td>
                             <td class="text-left hidden-480">
                                 @item.ProjectId
@@ -109,13 +112,13 @@
                             <td class="center">
                                 @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
                             </td>
-                            <td class="text-left">
+                            <td class="center">
                                 @item.UserCreated
                             </td>
                             <td class="center">
                                 @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
                             </td>
-                            <td class="text-left">
+                            <td class="center">
                                 @item.UserCreated
                             </td>
                         </tr>

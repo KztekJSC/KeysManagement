@@ -15,6 +15,8 @@ namespace Kztek_Model.Models
         public string Id { get; set; }
         public string Code { get; set; }
         public string AppId { get; set; }//key phần mềm nào
+        public string ProjectId { get; set; }//dự án nào
+        public string CustomerId { get; set; }//khách hàng nào
         public string UserCreated { get; set; }
         public bool Active { get; set; }
         public DateTime DateCreated { get; set; }
