@@ -71,61 +71,40 @@
                     @Html.ValidationMessageFor(n => n.Logo, "", new { @class = "text-danger" })
                 </div>
             </div>
+
             <div class="form-group">
-                <label class="col-md-2 control-label-left no-padding-right"> DelayTime  </label>
+                <label class="col-md-2 control-label-left no-padding-right"> Email hệ thống  </label>
                 <div class="col-md-5 col-xs-12">
-                    @Html.TextBoxFor(n => n.DelayTime, new { @class = "form-control", @placeholder = "DelayTime" })
-                    @Html.ValidationMessageFor(n => n.DelayTime, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(n => n.EmailSystem, new { @class = "form-control" })
+
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label-left no-padding-right"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:Para1" })  </label>
+                <label class="col-md-2 control-label-left no-padding-right"> Mật khẩu email  </label>
                 <div class="col-md-5 col-xs-12">
-                    @Html.TextBoxFor(n => n.Para1, new { @class = "form-control", @placeholder = "P1(MS)" })
-                    @Html.ValidationMessageFor(n => n.Para1, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(n => n.EmailPass, new { @class = "form-control", @type = "password" })
+
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label-left no-padding-right"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:Para2" })  </label>
+                <label class="col-md-2 control-label-left no-padding-right"> To  </label>
                 <div class="col-md-5 col-xs-12">
-                    @Html.TextBoxFor(n => n.Para2, new { @class = "form-control", @placeholder = "P2(KH)" })
-                    @Html.ValidationMessageFor(n => n.Para2, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(n => n.EmailTo, new { @class = "form-control" })
+
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"></label>
-                <div class="col-sm-8">
-                    <label class="line-height-250">
-                        @Html.CheckBoxFor(n => n.EnableDeleteCardFailed, new { @class = "ace" })
-                        <span class="lbl"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:EnableDeleteCardFailed" }) </span>
-                    </label>
+                <label class="col-md-2 control-label-left no-padding-right"> CC  </label>
+                <div class="col-md-5 col-xs-12">
+                    @Html.TextBoxFor(n => n.EmailCC, new { @class = "form-control" })
+
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"></label>
-                <div class="col-sm-8">
-                    <label class="line-height-250">
-                        @Html.CheckBoxFor(n => n.EnableSoundAlarm, new { @class = "ace" })
-                        <span class="lbl"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:EnableSoundAlarm" }) </span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"></label>
-                <div class="col-sm-8">
-                    <label class="line-height-250">
-                        @Html.CheckBoxFor(n => n.EnableAlarmMessageBox, new { @class = "ace" })
-                        <span class="lbl"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:EnableAlarmMessageBox" }) </span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"></label>
-                <div class="col-sm-8">
-                    <label class="line-height-250">
-                        @Html.CheckBoxFor(n => n.EnableAlarmMessageBoxIn, new { @class = "ace" })
-                        <span class="lbl"> @await Component.InvokeAsync("Language", new { path = "BODY:TABLE:EnableAlarmMessageBoxIn" }) </span>
-                    </label>
+                <label class="col-md-2 control-label-left no-padding-right"> BCC  </label>
+                <div class="col-md-5 col-xs-12">
+                    @Html.TextBoxFor(n => n.EmailBCC, new { @class = "form-control" })
+
                 </div>
             </div>
             <div class="clearfix form-actions">

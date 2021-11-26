@@ -71,6 +71,11 @@ namespace Kztek_Web.Controllers
             oldObj.SystemCode = obj.SystemCode;
             oldObj.Tax = !string.IsNullOrWhiteSpace(obj.Tax) ? obj.Tax : "";
             oldObj.Tel = !string.IsNullOrWhiteSpace(obj.Tel) ? obj.Tel : "";
+            oldObj.EmailSystem = obj.EmailSystem;
+            oldObj.EmailTo = obj.EmailTo;
+            oldObj.EmailBCC = obj.EmailBCC;
+            oldObj.EmailCC = obj.EmailCC;
+            oldObj.EmailPass = obj.EmailPass;
 
             var result = await _tblSystemConfigService.Update(oldObj);
             if (result.isSuccess)

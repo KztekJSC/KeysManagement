@@ -48,6 +48,11 @@ namespace Kztek_Model.Models
         public string Para2 { get; set; }
         public bool isAuthInView { get; set; }
         public bool IsAutoCapture { get; set; }
+        public string EmailSystem { get; set; }
+        public string EmailPass { get; set; }
+        public string EmailTo { get; set; }
+        public string EmailCC { get; set; }
+        public string EmailBCC { get; set; }
     }
 
     public class tblSystemConfig_POST

@@ -21,23 +21,33 @@
 <div class="row">
     @using (Html.BeginForm("Index", controller, FormMethod.Get, new { id = "frmPC" }))
     {
-        @Html.Hidden("ActiveKey", (string)ViewBag.ActiveKeyValue)
-        @Html.Hidden("selectedId", selected)
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 divboxmd">
-            <input type="text" name="key" value="@ViewBag.keyValue" placeholder="@await LanguageHelper.GetLanguageText("BODY:SEARCH:KEYWORD")" class="form-control" />
-        </div>
+    @Html.Hidden("ActiveKey", (string)ViewBag.ActiveKeyValue)
+    @Html.Hidden("selectedId", selected)
+    <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 divboxmd">
+        <input type="text" name="key" value="@ViewBag.keyValue" placeholder="@await LanguageHelper.GetLanguageText("BODY:SEARCH:KEYWORD")" class="form-control" />
+    </div>
 
-        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 divboxmd">
-            <button class="btn btn-white btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i> @await LanguageHelper.GetLanguageText("BODY:BUTTON:SEARCH") </button>
-            <a href='@Url.Action("Index", controller)' class="btn btn-primary btn-white" type="submit">
-                <i class="fa fa-refresh" aria-hidden="true"></i>
-                @await LanguageHelper.GetLanguageText("BODY:BUTTON:RESET")
-            </a>
-        </div>
+    <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 divboxmd">
+        <button class="btn btn-white btn-primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i> @await LanguageHelper.GetLanguageText("BODY:BUTTON:SEARCH") </button>
+        <a href='@Url.Action("Index", controller)' class="btn btn-primary btn-white" type="submit">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+            @await LanguageHelper.GetLanguageText("BODY:BUTTON:RESET")
+        </a>
+    </div>
     }
 </div>
 
 <div class="hr hr-18 dotted hr-24"></div>
+
+@*<div class="row">
+    <div class="col-xs-12">
+        <a href="/Admin/ActiveKey/Active?AreaCode=Admin" class="btn btn-white btn-purple">
+            <i class="fa fa-key"></i>  Active key
+        </a>
+    </div>
+</div>
+
+<div class="hr hr-18 dotted hr-24"></div>*@
 
 
 <div class="row">
@@ -63,65 +73,65 @@
                 {
                     foreach (var item in Model.Data)
                     {
-                        <tr class="@string.Format("{0}", (!string.IsNullOrWhiteSpace(selected) && !string.IsNullOrEmpty(item.Id) && selected == item.Id.ToString() ) ? "info" : "")">
-                            <td class="text-left">
-                                @item.AppId
-                            </td>
+                <tr class="@string.Format("{0}", (!string.IsNullOrWhiteSpace(selected) && !string.IsNullOrEmpty(item.Id) && selected == item.Id.ToString() ) ? "info" : "")">
+                    <td class="text-left">
+                        @item.AppId
+                    </td>
 
-                            <td class="text-left hidden-480">
-                                @item.CDKey
-                            </td>
-                            <td class="text-center hidden-480">
-                                @{
+                    <td class="text-left hidden-480">
+                        @item.CDKey
+                    </td>
+                    <td class="text-center hidden-480">
+                        @{
                                     if (!string.IsNullOrEmpty(item.UserCode))
                                     {
-                                        <span>✓</span>
+                            <span>✓</span>
                                     }
                                     else
                                     {
-                                        <a href='javascript:void(0)' class="pink modalUserCode" idata="@item.Id" title="Nhập UserCode">
-                                            <i class="ace-icon fa fa-code bigger-120"></i> Nhập UserCode
-                                        </a>
+                            <a href='javascript:void(0)' class="pink modalUserCode" idata="@item.Id" title="Nhập UserCode">
+                                <i class="ace-icon fa fa-code bigger-120"></i> Nhập UserCode
+                            </a>
                                     }
-                                }
-                            </td>
-                            <td class="text-center hidden-480">
-                                @{
+                        }
+                    </td>
+                    <td class="text-center hidden-480">
+                        @{
                                     if (!string.IsNullOrEmpty(item.KeyActive))
                                     {
-                                        @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
-                                           {
-                                                ControllerName = controller,
-                                                ActionName = "ExportKey",
-                                                RecordId = item.Id,
-                                                model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
-                                                Auth_Value = authModel
-                                                })
+                            @await Html.PartialAsync("~/Views/Shared/Partials/ActionPartial.cshtml", new Kztek_Library.Models.AuthPartialModel()
+                               {
+                                    ControllerName = controller,
+                                    ActionName = "ExportKey",
+                                    RecordId = item.Id,
+                                    model = new { id = item.Id, AreaCode = ViewBag.AreaCodeValue },
+                                    Auth_Value = authModel
+                                    })
                                             }
-                                }
-                            </td>
-                            <td class="text-left hidden-480">
-                                @if (!string.IsNullOrEmpty(item.CustomerId))
+                        }
+                    </td>
+                    <td class="text-left hidden-480">
+                        @if (!string.IsNullOrEmpty(item.CustomerId))
                                 {
-                                    @Html.Raw(item.CustomerId)
+                        @Html.Raw(item.CustomerId)
                                 }
-                            </td>
-                            <td class="text-left hidden-480">
-                                @item.ProjectId
-                            </td>
-                            <td class="center">
-                                @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
-                            </td>
-                            <td class="center">
-                                @item.UserCreated
-                            </td>
-                            <td class="center">
-                                @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
-                            </td>
-                            <td class="center">
-                                @item.UserCreated
-                            </td>
-                        </tr>
+                    </td>
+                    <td class="text-left hidden-480">
+                        @item.ProjectId
+                    </td>
+                    <td class="center">
+                        @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
+                    </td>
+                    <td class="center">
+                        @item.UserCreated
+                    </td>
+                    <td class="center">
+                        @item.DateCreated.ToString("dd/MM/yyyy HH:mm:ss")
+                    </td>
+                    <td class="center">
+                        @item.UserCreated
+                    </td>
+                </tr>
                     }
                 }
             </tbody>
@@ -129,18 +139,18 @@
     </div><!-- /.span -->
     @if (Model.Data.Any())
     {
-        <div class="col-xs-12">
-            <div class="pull-right">
-                @Html.GeneratePagingFooter(Model.TotalPage, Model.PageIndex, Model.PageSize, "pagination", x => Url.Action("Index", controller, new
-           {
-               page = x,
-               gate = ViewBag.gateValue,
-               key = ViewBag.keyValue,
-               AreaCode = ViewBag.AreaCodeValue,
-               selectedId = selected
-           }))
-            </div>
+    <div class="col-xs-12">
+        <div class="pull-right">
+            @Html.GeneratePagingFooter(Model.TotalPage, Model.PageIndex, Model.PageSize, "pagination", x => Url.Action("Index", controller, new
+       {
+           page = x,
+           gate = ViewBag.gateValue,
+           key = ViewBag.keyValue,
+           AreaCode = ViewBag.AreaCodeValue,
+           selectedId = selected
+       }))
         </div>
+    </div>
     }
 
 

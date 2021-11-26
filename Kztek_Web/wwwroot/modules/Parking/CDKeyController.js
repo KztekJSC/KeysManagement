@@ -29,34 +29,42 @@ var CDKeyController = {
     },
 
     Save: function () {
+
+        $("#boxLoding").css("display", "");
+
+        $("#btnCompleted").prop("disabled", true);
+
+        $("#btnClose").prop("disabled", true);
+
         var frm = $("#frmCDKey");
 
         var quan = frm.find("#Quantity").val();
 
-        if (quan !== '' && quan !== null && quan !== '0') {
-          
-            var model = {
-                Quantity: quan,
-                App: frm.find("#AppId").val(),
-                ProjectId: frm.find("#ProjectId").val(),
-                CustomerId: frm.find("#CustomerId").val()
-            }
-
-            JSHelper.AJAX_HttpPost('/Admin/CDKey/Save', model)
-                .done(function (data) {
-                    if (data.isSuccess) {
-
-                        toastr.success(data.Message);
-
-                        location.href = '/Admin/CDKey/Index';
-
-                    } else {
-                        toastr.error(data.Message);
-                    }
-                });
-        } else {
-            toastr.error("Vui lòng nhập số lượng!");
+        var model = {
+            Quantity: quan,
+            App: frm.find("#AppId").val(),
+            ProjectId: frm.find("#ProjectId").val(),
+            CustomerId: frm.find("#CustomerId").val()
         }
+
+        JSHelper.AJAX_HttpPost('/Admin/CDKey/Save', model)
+            .done(function (data) {
+                if (data.isSuccess) {
+
+                    toastr.success(data.message);
+
+                    location.href = '/Admin/CDKey/Index';
+
+                } else {
+                    toastr.error(data.message);
+                }
+
+                $("#boxLoding").css("display", "none");
+
+                $("#btnCompleted").prop("disabled", false);
+
+                $("#btnClose").prop("disabled", false);
+            });
     },
    
 }

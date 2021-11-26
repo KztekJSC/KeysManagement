@@ -24,7 +24,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
         private IUserService _UserService;
         private IProjectService _ProjectService;
         private ICustomerService _CustomerService;
-        public ActiveKeyController(IActiveKeyService _ActiveKeyService, IAppService _AppService, IUserService _UserService, IProjectService _ProjectService, ICustomerService _CustomerService, ICDKeyService _CDKeyService)
+        private ItblSystemConfigService _tblSystemConfigService;
+        public ActiveKeyController(IActiveKeyService _ActiveKeyService, IAppService _AppService, IUserService _UserService, IProjectService _ProjectService, ICustomerService _CustomerService, ICDKeyService _CDKeyService, ItblSystemConfigService _tblSystemConfigService)
         {
             this._ActiveKeyService = _ActiveKeyService;
             this._AppService = _AppService;
@@ -32,6 +33,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
             this._ProjectService = _ProjectService;
             this._CustomerService = _CustomerService;
             this._CDKeyService = _CDKeyService;
+            this._tblSystemConfigService = _tblSystemConfigService;
         }
 
         #region DDL   
@@ -239,7 +241,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
                             ProjectId = model.ProjectId,
                             UserCode = model.UserCode,
                             UserCreated = user != null ? user.UserId : "",
-                            KeyActive = "1234"
+                            //KeyActive = item.
                         };
 
                         mes = await _ActiveKeyService.Create(modelActive);
@@ -253,6 +255,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     }
 
                     mes = new MessageReport(true, "Active thành công!");
+
                 }
             }
             catch (Exception ex)
@@ -263,6 +266,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
 
             return await Task.FromResult(Json(mes));
         }
+
+   
         #endregion
 
         #region Nhập UserCode

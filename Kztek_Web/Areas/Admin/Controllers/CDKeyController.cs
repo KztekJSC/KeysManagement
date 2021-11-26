@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Kztek_Core.Models;
 using Kztek_Library.Configs;
@@ -23,7 +24,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
         private ICustomerService _CustomerService;
         private IUserService _UserService;
         private IActiveKeyService _ActiveKeyService;
-        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService, IActiveKeyService _ActiveKeyService, IProjectService _ProjectService, ICustomerService _CustomerService)
+        private ItblSystemConfigService _tblSystemConfigService;
+        public CDKeyController(ICDKeyService _CDKeyService, IAppService _AppService, IUserService _UserService, IActiveKeyService _ActiveKeyService, IProjectService _ProjectService, ICustomerService _CustomerService, ItblSystemConfigService _tblSystemConfigService)
         {
             this._CDKeyService = _CDKeyService;
             this._AppService = _AppService;
@@ -31,6 +33,7 @@ namespace Kztek_Web.Areas.Admin.Controllers
             this._ActiveKeyService = _ActiveKeyService;
             this._ProjectService = _ProjectService;
             this._CustomerService = _CustomerService;
+            this._tblSystemConfigService = _tblSystemConfigService;
         }
         #endregion
 
@@ -335,48 +338,188 @@ namespace Kztek_Web.Areas.Admin.Controllers
         {
             var mes = new MessageReport(false, "Có lỗi xảy ra!");
 
-            var user = await SessionCookieHelper.CurrentUser(this.HttpContext);
-
-            for (int i = 0; i< Quantity; i++)
+            if (string.IsNullOrEmpty(ProjectId))
             {
-                var model = new CDKey
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Active = true,
-                    AppId = App,
-                    DateCreated = DateTime.Now,
-                    IsDeleted = false,
-                    UserCreated = user != null ? user.UserId : "",
-                    Code = Guid.NewGuid().ToString(),
-                    ExpireDate = DateTime.Now.AddDays(7),
-                    IsExpire = false,
-                    CustomerId = CustomerId,
-                    ProjectId = ProjectId
-                };
+                mes = new MessageReport(false, "Vui lòng chọn dự án!");
 
-                mes = await CreateKey(model);
-
-                if(mes.isSuccess)
-                {
-                    var activeModel = new ActiveKey()
-                    {
-                        AppId = App,
-                        CDKey = model.Code,
-                        CustomerId = model.CustomerId,
-                        DateCreated = DateTime.Now,
-                        Id = Guid.NewGuid().ToString(),
-                        IsDeleted = false,
-                        KeyActive = "",
-                        ProjectId = model.ProjectId,
-                        UserCode = "",
-                        UserCreated = user != null ? user.UserId : ""
-                    };
-
-                    await CreateActiveKey(activeModel);
-                }
+                return Json(mes);
             }
 
+            if (string.IsNullOrEmpty(CustomerId))
+            {
+                mes = new MessageReport(false, "Vui lòng chọn khách hàng!");
+
+                return Json(mes);
+            }
+
+            if (Quantity == 0)
+            {
+                mes = new MessageReport(false, "Vui lòng chọn số lượng!");
+
+                return Json(mes);
+            }
+
+            var user = await SessionCookieHelper.CurrentUser(this.HttpContext);
+
+            List<ActiveKey> activeKeys = new List<ActiveKey>();
+
+            try
+            {
+                for (int i = 0; i < Quantity; i++)
+                {
+                    var model = new CDKey
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Active = true,
+                        AppId = App,
+                        DateCreated = DateTime.Now,
+                        IsDeleted = false,
+                        UserCreated = user != null ? user.UserId : "",
+                        Code = Guid.NewGuid().ToString(),
+                        ExpireDate = DateTime.Now.AddDays(7),
+                        IsExpire = false,
+                        CustomerId = CustomerId,
+                        ProjectId = ProjectId
+                    };
+
+                    mes = await CreateKey(model);
+
+                    if (mes.isSuccess)
+                    {
+                        var activeModel = new ActiveKey()
+                        {
+                            AppId = App,
+                            CDKey = model.Code,
+                            CustomerId = model.CustomerId,
+                            DateCreated = DateTime.Now,
+                            Id = Guid.NewGuid().ToString(),
+                            IsDeleted = false,
+                            KeyActive = "",
+                            ProjectId = model.ProjectId,
+                            UserCode = "",
+                            UserCreated = user != null ? user.UserId : ""
+                        };
+
+                        await CreateActiveKey(activeModel);
+
+                        //danh sách key active thành công
+                        activeKeys.Add(activeModel);
+                    }
+                }
+
+                mes = new MessageReport(true, "");
+
+                //gửi mail
+                var objSystem = await _tblSystemConfigService.GetDefault();
+
+                var body = await Body(activeKeys, objSystem.EmailSystem,user);
+
+                await MailHelper.SendMail("Kích hoạt key phần mềm", body, objSystem);
+
+            }
+            catch (Exception ex)
+            {
+                mes = new MessageReport(false, ex.Message);
+            } 
+
             return Json(mes);
+        }
+
+        async Task<string> Body(List<ActiveKey> activeKeys, string emailSystem,SessionModel user)
+        {
+            var _bodyHtml = new StringBuilder();
+
+            if (activeKeys != null && activeKeys.Count > 0 && !string.IsNullOrEmpty(emailSystem))
+            {
+                #region header
+                _bodyHtml.AppendLine("<h1> Danh sách key active </h1>");
+
+                _bodyHtml.AppendLine(string.Format("<h4> Người tạo: <strong>{0}</strong> </h4>", user != null ? user.Name : ""));
+
+                _bodyHtml.AppendLine("<div>");
+
+                _bodyHtml.AppendLine("<table>");
+
+                _bodyHtml.AppendLine("</table style='border: 1px solid #ccc;width:auto' cellspacing='0' cellpadding='3' border='0' align='left'>");
+
+                _bodyHtml.AppendLine("<tr style='font-weight: bold; background-color: #d9d6d6;'>");
+
+                _bodyHtml.AppendLine("<td style='color:#333333;border-right:1px solid #ccc;text-transform:none;font-family:Arial;font-size:12px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;border-top:1px solid #ccc;border-left:1px solid #ccc;border-bottom:1px solid #ccc' align='left'>");
+
+                _bodyHtml.AppendLine("Phần mềm</td>");
+
+                _bodyHtml.AppendLine("<td style='color:#333333;border-right:1px solid #ccc;text-transform:none;font-family:Arial;font-size:12px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;border-top:1px solid #ccc;border-bottom:1px solid #ccc' align='left'>");
+
+                _bodyHtml.AppendLine("Dự án</td>");
+
+                _bodyHtml.AppendLine("<td style='color:#333333;border-right:1px solid #ccc;text-transform:none;font-family:Arial;font-size:12px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;border-top:1px solid #ccc;border-bottom:1px solid #ccc' align='left'>");
+
+                _bodyHtml.AppendLine("Khách hàng</td>");
+
+                _bodyHtml.AppendLine("<td style='color:#333333;border-right:1px solid #ccc;text-transform:none;font-family:Arial;font-size:12px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;border-top:1px solid #ccc;border-bottom:1px solid #ccc' align='left'>");
+
+                _bodyHtml.AppendLine("CDKey</td>");
+
+                _bodyHtml.AppendLine("</tr>");
+                #endregion
+
+                var apps = await _AppService.GetAll();
+
+                var pros = await _ProjectService.GetAll();
+
+                var cuss = await _CustomerService.GetAll();
+
+                foreach (var item in activeKeys)
+                {
+                    var objApp = apps.FirstOrDefault(n => n.Id == item.AppId);
+
+                    item.AppId = objApp != null ? objApp.Name + " - " + objApp.Code : "";
+
+                    var objPro = pros.FirstOrDefault(n => n.Id == item.ProjectId);
+
+                    item.ProjectId = objPro != null ? objPro.Name : "";
+
+                    var objCus = cuss.FirstOrDefault(n => n.Id == item.CustomerId);
+
+                    item.CustomerId = objCus != null ? string.Format("<span>{0} - {1}</span><p>{2}</p>", objCus.Name, objCus.Phone, objCus.Address) : "";
+
+                    _bodyHtml.AppendLine("<tr>");
+
+                    _bodyHtml.AppendLine("<td style='border-right:1px solid #ccc;text-transform:uppercase;font-family:Arial;color:#333333;font-size:12px;padding-left:10px;padding-right:10px;border-bottom:1px solid #ccc;direction:ltr;padding-top:5px;padding-bottom:5px;border-left:1px solid #ccc'>");
+
+                    _bodyHtml.AppendLine(string.Format("{0}", item.AppId));
+
+                    _bodyHtml.AppendLine("</td>");
+
+                    _bodyHtml.AppendLine("<td style='border-right:1px solid #ccc;text-transform:uppercase;font-family:Arial;color:#333333;font-size:12px;padding-left:10px;padding-right:10px;border-bottom:1px solid #ccc;direction:ltr;padding-top:5px;padding-bottom:5px'>");
+
+                    _bodyHtml.AppendLine(string.Format("{0}", item.ProjectId));
+
+                    _bodyHtml.AppendLine("</td>");
+
+                    _bodyHtml.AppendLine("<td style='border-right:1px solid #ccc;text-transform:uppercase;font-family:Arial;color:#333333;font-size:12px;padding-left:10px;padding-right:10px;border-bottom:1px solid #ccc;direction:ltr;padding-top:5px;padding-bottom:5px'>");
+
+                    _bodyHtml.AppendLine(string.Format("{0}", item.CustomerId));
+
+                    _bodyHtml.AppendLine("</td>");
+
+                    _bodyHtml.AppendLine("<td style='border-right:1px solid #ccc;text-transform:uppercase;font-family:Arial;color:#333333;font-size:12px;padding-left:10px;padding-right:10px;border-bottom:1px solid #ccc;direction:ltr;padding-top:5px;padding-bottom:5px'>");
+
+                    _bodyHtml.AppendLine(string.Format("{0}", item.CDKey));
+
+                    _bodyHtml.AppendLine("</td>");
+
+                    _bodyHtml.AppendLine("</tr>");
+                }
+
+
+
+                _bodyHtml.AppendLine("</div>");
+            }
+
+
+
+            return _bodyHtml.ToString();
         }
 
         public async Task<MessageReport> CreateKey(CDKey model)
