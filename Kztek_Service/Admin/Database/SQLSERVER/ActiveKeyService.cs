@@ -41,9 +41,9 @@ namespace Kztek_Service.Admin.Database.SQLSERVER
                 query = query.Where(n => n.KeyActive.Contains(key));
             }
 
-            var pageList = query.ToPagedList(pageNumber, pageSize);
+            var pageList = query.OrderByDescending(n => n.DateCreated).ToPagedList(pageNumber, pageSize);
 
-            var model = GridModelHelper<ActiveKey>.GetPage(pageList.OrderByDescending(n => n.DateCreated).ToList(), pageNumber, pageSize, pageList.TotalItemCount, pageList.PageCount);
+            var model = GridModelHelper<ActiveKey>.GetPage(pageList.ToList(), pageNumber, pageSize, pageList.TotalItemCount, pageList.PageCount);
 
             return await Task.FromResult(model);
 
