@@ -17,6 +17,14 @@
     $("body").on("change", "#AppId", function () {
         $("#appId").val($(this).val())
     })
+
+    $("body").on("change", "#CustomerId", function () {
+        $("#cId").val($(this).val())
+    })
+
+    $("body").on("change", "#ProjectId", function () {
+        $("#pId").val($(this).val())
+    })
 })
 var CDKeyController = {
     ModalKey: function () {

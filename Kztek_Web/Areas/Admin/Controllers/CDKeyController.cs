@@ -236,6 +236,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
             ViewBag.AreaCodeValue = AreaCode;
             ViewBag.keyValue = key;
             ViewBag.App = await GetApp(model.AppId);
+            ViewBag.Project = await GetProject(model.ProjectId);
+            ViewBag.Customer = await GetCustomer(model.CustomerId);
 
             return View(model);
         }
@@ -252,9 +254,11 @@ namespace Kztek_Web.Areas.Admin.Controllers
         /// <returns></returns>
         [CheckSessionCookie(AreaConfig.Admin)]
         [HttpPost]
-        public async Task<IActionResult> Update(CDKey model, string AreaCode = "", int page = 1, string key = "",string appId = "", string txtDate = "")
+        public async Task<IActionResult> Update(CDKey model, string AreaCode = "", int page = 1, string key = "",string appId = "",string pId = "",string cId = "", string txtDate = "")
         {
             ViewBag.App = await GetApp(appId);
+            ViewBag.Project = await GetProject(pId);
+            ViewBag.Customer = await GetCustomer(cId);
             //
             ViewBag.keyValue = key;
             ViewBag.AreaCodeValue = AreaCode;
@@ -285,6 +289,8 @@ namespace Kztek_Web.Areas.Admin.Controllers
             oldObj.ExpireDate = !string.IsNullOrEmpty(txtDate) ? Convert.ToDateTime(txtDate) : DateTime.Now;
             oldObj.Active = model.Active;
             oldObj.IsExpire = model.IsExpire;
+            oldObj.ProjectId = pId;
+            oldObj.CustomerId = cId;
 
             var result = await _CDKeyService.Update(oldObj);
             if (result.isSuccess)
@@ -337,20 +343,6 @@ namespace Kztek_Web.Areas.Admin.Controllers
         public async Task<IActionResult> Save(int Quantity,string App,string ProjectId,string CustomerId)
         {
             var mes = new MessageReport(false, "Có lỗi xảy ra!");
-
-            if (string.IsNullOrEmpty(ProjectId))
-            {
-                mes = new MessageReport(false, "Vui lòng chọn dự án!");
-
-                return Json(mes);
-            }
-
-            if (string.IsNullOrEmpty(CustomerId))
-            {
-                mes = new MessageReport(false, "Vui lòng chọn khách hàng!");
-
-                return Json(mes);
-            }
 
             if (Quantity == 0)
             {
@@ -407,15 +399,17 @@ namespace Kztek_Web.Areas.Admin.Controllers
                     }
                 }
 
-                mes = new MessageReport(true, "");
+                mes = new MessageReport(true, "Thành công");
 
                 //gửi mail
                 var objSystem = await _tblSystemConfigService.GetDefault();
 
-                var body = await Body(activeKeys, objSystem.EmailSystem,user);
+                if (!string.IsNullOrEmpty(objSystem.EmailTo))
+                {
+                    var body = await Body(activeKeys, objSystem.EmailSystem, user);
 
-                await MailHelper.SendMail("Kích hoạt key phần mềm", body, objSystem);
-
+                    await MailHelper.SendMail("Kích hoạt key phần mềm", body, objSystem);
+                }
             }
             catch (Exception ex)
             {

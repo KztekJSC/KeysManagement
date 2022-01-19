@@ -6,7 +6,9 @@
     Controller = "CDKey",
     Action = "Update",
     Page = Convert.ToInt32(ViewBag.PN),
-    Data_Select_1 = (Kztek_Library.Models.SelectListModel_Chosen)ViewBag.App
+    Data_Select_1 = (Kztek_Library.Models.SelectListModel_Chosen)ViewBag.App,
+    Data_Select_2 = (Kztek_Library.Models.SelectListModel_Chosen)ViewBag.Project,
+    Data_Select_3 = (Kztek_Library.Models.SelectListModel_Chosen)ViewBag.Customer
 })
 @section scripts{
     <script src="~/modules/Parking/CDKeyController.js"></script>
