@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon />
+    <StartupObject />
+	<Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.21</AssemblyVersion>
+    <FileVersion>2.0.0.21</FileVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="packages\**" />
+    <EmbeddedResource Remove="packages\**" />
+    <None Remove="packages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="PreLogin.cs" />
+    <Compile Remove="PreLogin.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="PreLogin.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Kztek.CommonUI5">
+      <HintPath>..\..\..\MY SOURCE\Kztek.Library\Kztek.CommonUI5\Kztek.CommonUI5\bin\Debug\net5.0-windows\Kztek.CommonUI5.dll</HintPath>
+    </Reference>
+    <Reference Include="Kztek.Utilities">
+      <HintPath>..\..\..\Kztek.Libraries\Kztek.Utilities\bin\Debug\net5.0-windows\Kztek.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Kztek_Security">
+      <HintPath>bin\Debug\net5.0-windows\Kztek_Security.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>bin\Debug\net5.0-windows\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
